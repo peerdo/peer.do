@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="gen"> <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Coiner's Dilemma</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+		<link rel="stylesheet" href="/static/css/normalize.css">
+		<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="/static/css/screen.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" type='text/css' />
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.min.css" type='text/css' />
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2-bootstrap.css" type='text/css' />
+		<script src="/static/js/vendor/modernizr-2.6.2.min.js"></script>
+		<script src="/static/js/jquery.js"></script>
+		<script src="/static/js/underscore.js"></script>
+		<script src="/static/js/backbone.js"></script>
+		<script src="/static/js/backbone.epoxy.js"></script>
+		<script src="/static/js/moment.min.js"></script>
+		<script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js"></script>
+		<script src="http://cdn.jsdelivr.net/qtip2/2.2.0/jquery.qtip.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.js"></script>
+		<script src="/static/js/app.js"></script>
+	</head>
+	<body class="{% block body_class %}{% endblock %}" ng-controller="MainCntl as main">
+		<!--[if lt IE 7]>
+			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+		<![endif]-->
+
+		<!-- Add your site or application content here -->
+		<header>
+			<div class="top">
+				<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+					<div class="navbar-collapse collapse">
+						<ul class="nav navbar-nav">
+							<li><a href='#'>About</a></li>
+							<li><a href='#'>FAQ</a></li>
+							<li><a href='#'>Contact</a></li>
+						</ul>
+						<p class="number-active navbar-text navbar-right"><strong>1,238</strong> games in progress.</p>
+					</div>
+				</nav>
+			</div>
+			<div class="bottom">
+				<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+					<div class="navbar-header"><a class="navbar-brand navbar-left">Peer<strong>.do</strong></a></div>
+					<div class="navbar-collapse collapse">
+						<div class="navbar-right">
+							<ul class="nav navbar-nav">
+								<li><a data-page="my_games" href='#/'>My games</a></li>
+								<li><a data-page="all_games" href="#/">All games</a></li>
+								<li><a data-page="my_cards" href="#/cards/mine/">My cards</a></li>
+								<li><a href='#/account'>Account</a></li>
+							</ul>
+							<p class="balance navbar-text">62.3 <small>mBTC</small></p>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</header>
+		<div class="page" id="page_index" style="display:none;">
+			<div class="jumbotron">
+				<h1>Peer<strong>.do</strong></h1>
+				<h2>A laboratory for co-funded action.</h2>
+			</div>
+			<div class="container">
+				<div class="start">
+					<h2>What would you like to <strong>do</strong>?</h2>
+					<input type="text" />
+					<div class="links"><a>How it works</a> &middot; <a>What is a deed?</a> &middot; <a>FAQ</a></div>
+				</div>
+				<div class="recents">
+					<h2>Recently funded deeds</h2>
+					<ul class="row">
+						<li class="col-sm-3 col-xs-6">
+							<div class="card">
+								<h4>City of Darkness</h4>
+								<img src="https://s3.amazonaws.com/ksr/projects/895678/photo-ed.jpg?1394169057" />
+								<div class="lower">
+									<span class="amount">50 mBTC</span>
+									<span class="right"><a class="btn btn-xs btn-success" role="button" href="#">Donate</a></span>
+								</div>
+							</div>
+						</li>
+						<li class="col-sm-3 col-xs-6">
+							<div class="card">
+								<h4>Firewords</h4>
+								<img src="https://s3.amazonaws.com/ksr/projects/896352/photo-little.jpg?1395186810" />
+								<div class="lower">
+									<span class="amount">75 mBTC</span>
+									<span class="right"><a class="btn btn-xs btn-success" role="button" href="#">Donate</a></span>
+								</div>
+							</div>
+						</li>
+						<li class="col-sm-3 col-xs-6">
+							<div class="card">
+								<h4>Tuscany</h4>
+								<img src="https://s3.amazonaws.com/ksr/projects/817282/photo-little.jpg?1393821322" />
+								<div class="lower">
+									<span class="amount">13 mBTC</span>
+									<span class="right"><a class="btn btn-xs btn-success" role="button" href="#">Donate</a></span>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="live">
+					<h2>Live rounds</h2>
+					<ul class="grid row" id="live-games-grid">
+						<li class="col-xs-6">
+							<div class="round">
+								<h4>10 deeds, 100 mBTC in pot, 06:23 left</h4>
+								<ul class="cards">
+									<li><img src="http://i.imgur.com/Vm0CR0Bb.jpg" /></li>
+									<li><img src="http://i.imgur.com/QvKLlbXb.jpg" /></li>
+									<li><img src="http://i.imgur.com/x3gmYHTb.jpg" /></li>
+									<li><img src="http://i.imgur.com/APagUYHb.jpg" /></li>
+									<li><img src="http://i.imgur.com/8JltaxXb.jpg" /></li>
+									<li><img src="http://i.imgur.com/MNC8Ncgb.jpg" /></li>
+									<li><img src="http://i.imgur.com/7VSljF9b.jpg" /></li>
+									<li><img src="http://i.imgur.com/Y9kwHXgb.jpg" /></li>
+									<li><img src="http://i.imgur.com/pYxUVZUb.jpg" /></li>
+									<li><img src="http://i.imgur.com/264fVS1b.jpg" /></li>
+									<li><img src="http://i.imgur.com/cVb8mh3b.jpg" /></li>
+								</ul>
+							</div>
+						</li>
+						<li class="col-xs-6">
+							<div class="round">
+								<h4>5 deeds, 86.2 mBTC in pot, 13:23 left</h4>
+								<ul class="cards">
+									<li><img src="http://i.imgur.com/cVb8mh3b.jpg" /></li>
+									<li><img src="http://i.imgur.com/264fVS1b.jpg" /></li>
+									<li><img src="http://i.imgur.com/pYxUVZUb.jpg" /></li>
+									<li><img src="http://i.imgur.com/Y9kwHXgb.jpg" /></li>
+									<li><img src="http://i.imgur.com/7VSljF9b.jpg" /></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="info">
+					<h2>Peer.do 0.1: &ldquo;Promises, Promises&rdquo;</h2>
+					<p>Currently working on: credibility, themes and tags for rounds, moderation. Further off: Ethereum? ;)</p>
+				</div>
+			</div>
+		</div>
+		<div class="page" id="page_my_games" style="display:block;">
+			<div class="container">
+				<h2>My games</h2>
+				<ul class="grid" id="my-games-grid"></ul>
+				<a href="#" id="join-game-button" class="join btn btn-default">Join game</a>
+			</div>
+			<!-- Modal -->
+			<div class="modal fade" id="joinGameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Join game</h4>
+			      </div>
+
+			      <form id="join-game-form">
+			      <div class="modal-body">
+			      	  <div class="form-group">
+			      	  	<label for="stake">Choose a stake:</label></br />
+				      	  	<label class="" for="stake-10">
+				      	  		<input type="radio" name="stake" value="10" id="stake-10" checked="checked" />
+				      	  		10 mBTC
+				      	  		<small>(about $10)</small>
+				      	  	</label>
+				      	  	<label class="" for="stake-20">
+				      	  		<input type="radio" name="stake" value="20" id="stake-20" />
+				      	  		20 mBTC
+				      	  		<small>(about $20)</small>
+				      	  	</label>
+				      	  	<label class="" for="stake-50">
+				      	  		<input type="radio" name="stake" value="50" id="stake-50" />
+				      	  		50 mBTC
+				      	  		<small>(about $50)</small>
+				      	  	</label>
+			      	  </div>
+			      	  <div class="form-group">
+			      	  	<label for="select-card">And a card:</label>
+			      	  	<input id="select-card" class="form-control" name="select-card" type="hidden" />
+			      	  </div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			        <button type="submit" class="btn btn-primary" type="submit">Go!</button>
+			      </div>
+				  </form>	
+			    </div>
+			  </div>
+			</div>
+		</div>
+		<div class="page" id="page_game" style="display:none;">
+		    <div class="pane header">
+		        <div class="status">
+		    		<div class="status-text">Waiting for players...</div>
+		        	<time class="timer" datetime="x">01:32</time>
+		        </div>
+		        <div class="stake">
+		            <small>Stake</small>
+		            <span>50</span> mBTC
+		        </div>
+		        <div class="potential">
+		            <small>Potential winnings</small>
+		            <span>425</span> mBTC
+		        </div>
+		    </div>
+		    <div class="pane-container">
+		        <div class="pane cards">
+		            <ul id="game-card-list">
+					</ul>
+		        </div>
+		        <div class="pane" id="ended-pane" style="display:none;"></div>
+		        <div class="pane chat" id="game-messages-pane">
+		            <ul id="game-messages">
+		                
+		            </ul>
+		            <textarea class="chatbox"></textarea>
+		        </div>
+		    </div>
+		</div>
+		<div class="page" id="page_my_cards" style="display:none;">
+			<div class="pane header">
+				<div class="cards">
+					<small>Cards</small>
+					<span>2</span>
+				</div>
+				<div class="new">
+					<button class="btn" id="create-card-btn">Create new card</button>
+				</div>
+			</div>
+			<div class="pane-container">
+				<div class="pane cards">
+					<ul id="my-cards-list">
+					    
+					</ul>
+				</div>
+				<div class="pane card-info" id="">
+				    <div id="card-view"></div>
+				</div>
+			</div>
+		</div>
+		<div class="page" id="page_all_games" style="display:none;">
+			<table id="all-games-table">
+			</table>
+		</div>
+
+		<!--<footer>
+			Footer!
+		</footer>-->
+
+	  </body>
+</html>

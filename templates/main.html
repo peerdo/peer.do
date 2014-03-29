@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="page" class="games">
+    <div class="container">
+        <h2>My games</h2>
+        <ul class="grid" id="my-games-grid">
+            <li><a class="active" href='/game/2/'>
+                <div class="info">
+                    <div class="players">10 players</div>
+                    <div class="stake">50 mBTC</div>
+                    <div class="votes">2 votes</div>
+                </div>
+                <div class="time">01:32</div>
+            </a></li>
+            <li><a href="#">
+                <div class="info">
+                    <div class="players">5 players</div>
+                    <div class="stake">WON 5023 mBTC</div>
+                    <div class="finished">Two days ago</div>
+                </div>
+            </a></li>
+            <li><a href="#" class="new">
+                <h3>+ Join new game</h3>
+            </a></li>
+        </ul>
+        <form class="new-game-form">
+            <div class="cards">
+                <h2>My cards</h2>
+                <ul>
+                    {% for card in cards %}
+                        <li>{{ card }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <ul>
+                <li>
+                    <label>Cards</label>
+                    <div class="cards">
+
+                    </div>
+                </li>
+                <li>
+                    <label>Stake</label>
+                    <select>
+                        <choice>1 mBTC</choice>
+                        <choice>5 mBTC</choice>
+                        <choice>10 mBTC</choice>
+                    </select>
+                </li>
+                <li><button>Go!</button></li>
+            </ul>
+        </form>
+    </div>
+</div>
+{% endblock %}
