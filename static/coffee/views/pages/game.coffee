@@ -57,6 +57,7 @@ class GameMessageListView extends Backbone.Epoxy.View
 	el: "ul#game-messages"
 	bindings:
 		':el': "collection:$collection"
+	itemView: GameMessageListItemView
 
 
 class GameMessagesView extends Backbone.View

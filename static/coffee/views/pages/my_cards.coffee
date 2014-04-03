@@ -1,3 +1,4 @@
+Card = require('../../models/card.coffee').Card
 CardCollection = require('../../models/card.coffee').CardCollection
 Page = require('../page.coffee')
 

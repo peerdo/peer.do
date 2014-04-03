@@ -258,7 +258,7 @@ module.exports = {
 
 
 },{}],3:[function(require,module,exports){
-var CardCollection, Game, GameCard, GameCardCollection, GameCollection,
+var CardCollection, Game, GameCard, GameCardCollection, GameCollection, GameMessageCollection, MessageCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -304,6 +304,7 @@ Game = (function(_super) {
   };
 
   Game.prototype.initialize = function(data) {
+    var Message;
     this.cards = new GameCardCollection([], {
       game: this
     });
@@ -313,6 +314,7 @@ Game = (function(_super) {
         return this.trigger('fetched_cards');
       }).bind(this)
     });
+    Message = require('./message.coffee').Message;
     this.messages = new GameMessageCollection([
       new Message({
         time: "16:08",
@@ -506,6 +508,19 @@ GameCardCollection = (function(_super) {
 
 })(CardCollection);
 
+MessageCollection = require('./message.coffee').MessageCollection;
+
+GameMessageCollection = (function(_super) {
+  __extends(GameMessageCollection, _super);
+
+  function GameMessageCollection() {
+    return GameMessageCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  return GameMessageCollection;
+
+})(MessageCollection);
+
 module.exports = {
   Game: Game,
   GameCollection: GameCollection,
@@ -513,7 +528,7 @@ module.exports = {
 };
 
 
-},{"./card.coffee":2}],4:[function(require,module,exports){
+},{"./card.coffee":2,"./message.coffee":4}],4:[function(require,module,exports){
 var Message, MessageCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -717,7 +732,7 @@ GameCardListItemView = (function(_super) {
     return GameCardListItemView.__super__.constructor.apply(this, arguments);
   }
 
-  GameCardListItemView.prototype.el = "<li classes:{voted:has_my_vote, mine:is_mine}>\n    <h3 data-bind=\"text:title\">Tarquin</h3>\n    <img data-bind=\"attr:{src:image_url}\" />\n    <div class=\"votes\" data-bind=\"text:votes\"></div>\n    <div class=\"full-card hidden\">\n    	<div class=\"img-container\">\n    		<img data-bind=\"attr:{src:image_url}\" />\n    		<h3 data-bind=\"text:title\">Name</h3>\n    		<div class=\"giveback\"><span><strong data-bind=\"text:giveback\">90</strong>%</span> giveback</div>\n    	</div>\n        <div class=\"message\" data-bind=\"text:message\">\n        	<strong>Message</strong>\n        	This message should be under 160 chars and can include links. :D</div>\n        <div class=\"ratings\">\n            <div class=\"credibility\"><strong>Credibility</strong><span data-bind=\"text:credibility\">50</span>%</div>\n            <div class=\"longevity\"><strong>Longevity</strong><span data-bind=\"text:longevity\">6</span> games</div>\n            <div class=\"winnings\"><strong>Winnings</strong><span data-bind=\"text:winnings\">501 mBTC</span></div>\n            	<div class=\"url\"><strong>Url</strong> <span data-bind=\"toggle:none(url)\">[no url]</span><a data-bind=\"text:url,attr:{href:url}\">View</a></div>\n        </div>\n        <button class=\"btn vote\" data-bind=\"toggle:can_vote,attr:{disabled:has_my_vote},text:select(has_my_vote, 'Voted!', 'Vote')\">Vote</button>\n    </div>\n</li>";
+  GameCardListItemView.prototype.el = "<li classes:{voted:has_my_vote, mine:is_mine}>\n    <h3 data-bind=\"text:title\">Title</h3>\n    <img data-bind=\"attr:{src:image_url}\" />\n    <div class=\"votes\" data-bind=\"text:votes\"></div>\n    <div class=\"full-card hidden\">\n    	<div class=\"img-container\">\n    		<img data-bind=\"attr:{src:image_url}\" />\n    		<h3 data-bind=\"text:title\">Name</h3>\n    		<div class=\"giveback\"><span><strong data-bind=\"text:giveback\">90</strong>%</span> giveback</div>\n    	</div>\n        <div class=\"message\" data-bind=\"text:message\"></div>\n        <div class=\"ratings\">\n            <div class=\"credibility\"><strong>Credibility</strong><span data-bind=\"text:credibility\">50</span>%</div>\n            <div class=\"longevity\"><strong>Longevity</strong><span data-bind=\"text:longevity\">6</span> games</div>\n            <div class=\"winnings\"><strong>Winnings</strong><span data-bind=\"text:winnings\">501 mBTC</span></div>\n            	<div class=\"url\"><strong>Url</strong> <span data-bind=\"toggle:none(url)\">[no url]</span><a data-bind=\"text:url,attr:{href:url}\">View</a></div>\n        </div>\n        <button class=\"btn vote\" data-bind=\"toggle:can_vote,attr:{disabled:has_my_vote},text:select(has_my_vote, 'Voted!', 'Vote')\">Vote</button>\n    </div>\n</li>";
 
   GameCardListItemView.prototype.events = {
     'click h3, img': function(e) {
@@ -790,6 +805,8 @@ GameMessageListView = (function(_super) {
   GameMessageListView.prototype.bindings = {
     ':el': "collection:$collection"
   };
+
+  GameMessageListView.prototype.itemView = GameMessageListItemView;
 
   return GameMessageListView;
 
@@ -964,9 +981,11 @@ module.exports = IndexPage;
 
 
 },{"../page.coffee":6}],10:[function(require,module,exports){
-var CardCollection, MyCardView, MyCardsCollection, MyCardsListItemView, MyCardsListView, MyCardsPage, Page,
+var Card, CardCollection, MyCardView, MyCardsCollection, MyCardsListItemView, MyCardsListView, MyCardsPage, Page,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Card = require('../../models/card.coffee').Card;
 
 CardCollection = require('../../models/card.coffee').CardCollection;
 

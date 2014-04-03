@@ -22,6 +22,7 @@ class Game extends Backbone.Epoxy.Model
 				@c().winner.get(true)
 				@trigger('fetched_cards')
 			).bind(@)
+		Message = require('./message.coffee').Message
 		@messages = new GameMessageCollection [
 				new Message
 					time: "16:08"
@@ -154,6 +155,8 @@ class GameCardCollection extends CardCollection
 	url: -> @game.url() + '/cards'
 	model: GameCard
 
+MessageCollection = require('./message.coffee').MessageCollection
+class GameMessageCollection extends MessageCollection
 
 module.exports =
 	Game: Game
