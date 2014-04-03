@@ -305,8 +305,9 @@ button {
       content: '';
       display: inline-block;
       height: 100%;
+      width: 1px;
       vertical-align: middle;
-      margin-right: -0.25em; /* Adjusts for spacing */
+      margin-right: -1em; /* Adjusts for spacing */
     }
 
     /* The element to be centered, can
