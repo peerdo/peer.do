@@ -12,33 +12,33 @@ class App extends Backbone.View
 
 	initialize: ->
 		PageRouter = require './router.coffee'
-		GamePage = require './views/pages/game.coffee'
+		RoundPage = require './views/pages/round.coffee'
 		IndexPage = require './views/pages/index.coffee'
-		MyGamesPage = require('./views/pages/my_games.coffee').MyGamesPage
-		MyCardsPage = require('./views/pages/my_cards.coffee').MyCardsPage
-		AllGamesPage = require './views/pages/all_games.coffee'
-		MyGamesCollection = require('./views/pages/my_games.coffee').MyGamesCollection
-		MyCardsCollection = require('./views/pages/my_cards.coffee').MyCardsCollection
+		MyRoundsPage = require('./views/pages/my_rounds.coffee').MyRoundsPage
+		MyDeedsPage = require('./views/pages/my_deeds.coffee').MyDeedsPage
+		AllRoundsPage = require './views/pages/all_rounds.coffee'
+		MyRoundsCollection = require('./views/pages/my_rounds.coffee').MyRoundsCollection
+		MyDeedsCollection = require('./views/pages/my_deeds.coffee').MyDeedsCollection
 		@pages = {}
 		@collections = {}
-		@collections.my_games = new MyGamesCollection()
-		@collections.my_games.fetch(data: {mine: true}, processData: true)
-		@collections.my_cards = new MyCardsCollection()
-		@collections.my_cards.fetch()
+		@collections.my_rounds = new MyRoundsCollection()
+		@collections.my_rounds.fetch(data: {mine: true}, processData: true)
+		@collections.my_deeds = new MyDeedsCollection()
+		@collections.my_deeds.fetch()
 
-		@add_page(new GamePage({app: @}))
-		@add_page(new MyGamesPage({app: @, collection: @collections.my_games}))
-		@add_page(new AllGamesPage({app: @}))
-		@add_page(new MyCardsPage({app: @}))
+		@add_page(new RoundPage({app: @}))
+		@add_page(new MyRoundsPage({app: @, collection: @collections.my_rounds}))
+		@add_page(new AllRoundsPage({app: @}))
+		@add_page(new MyDeedsPage({app: @}))
 		@add_page(new IndexPage({app: @}))
 
-		@current_page = @pages['my_games']
+		@current_page = @pages['my_rounds']
 
 		@router = new PageRouter
 			app: @
 
 		@sock = new SockJS("/sock")
-		@sock._games = {}
+		@sock._rounds = {}
 		@sock.q = []
 		@sock.onopen = ->
 			console.log('open')
@@ -55,8 +55,8 @@ class App extends Backbone.View
 				console.log(@q)
 				for m in @q
 					@send m
-			if data.type == 'game_event'
-				@_games[data.game_id].trigger('server:' + data.event, data.data)
+			if data.type == 'round_event'
+				@_rounds[data.round_id].trigger('server:' + data.event, data.data)
 		@sock.onclose = ->
 			console.log('close')
 
@@ -67,17 +67,17 @@ class App extends Backbone.View
 			else
 				@send j
 
-		@sock.game_subscribe = (game) ->
-			@_games[game.id] = game
+		@sock.round_subscribe = (round) ->
+			@_rounds[round.id] = round
 			@send_data
-				type: 'game_subscribe'
-				game_id: game.id
+				type: 'round_subscribe'
+				round_id: round.id
 
-		@sock.game_unsubscribe = (game) ->
-			delete @_games[game.id]
+		@sock.round_unsubscribe = (round) ->
+			delete @_rounds[round.id]
 			@send_data
-				type: 'game_unsubscribe'
-				game_id: game.id
+				type: 'round_unsubscribe'
+				round_id: round.id
 
 $(document).ready ->
 	window.app = new App()

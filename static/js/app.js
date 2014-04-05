@@ -27,48 +27,48 @@ App = (function(_super) {
   };
 
   App.prototype.initialize = function() {
-    var AllGamesPage, GamePage, IndexPage, MyCardsCollection, MyCardsPage, MyGamesCollection, MyGamesPage, PageRouter;
+    var AllRoundsPage, IndexPage, MyDeedsCollection, MyDeedsPage, MyRoundsCollection, MyRoundsPage, PageRouter, RoundPage;
     PageRouter = require('./router.coffee');
-    GamePage = require('./views/pages/game.coffee');
+    RoundPage = require('./views/pages/round.coffee');
     IndexPage = require('./views/pages/index.coffee');
-    MyGamesPage = require('./views/pages/my_games.coffee').MyGamesPage;
-    MyCardsPage = require('./views/pages/my_cards.coffee').MyCardsPage;
-    AllGamesPage = require('./views/pages/all_games.coffee');
-    MyGamesCollection = require('./views/pages/my_games.coffee').MyGamesCollection;
-    MyCardsCollection = require('./views/pages/my_cards.coffee').MyCardsCollection;
+    MyRoundsPage = require('./views/pages/my_rounds.coffee').MyRoundsPage;
+    MyDeedsPage = require('./views/pages/my_deeds.coffee').MyDeedsPage;
+    AllRoundsPage = require('./views/pages/all_rounds.coffee');
+    MyRoundsCollection = require('./views/pages/my_rounds.coffee').MyRoundsCollection;
+    MyDeedsCollection = require('./views/pages/my_deeds.coffee').MyDeedsCollection;
     this.pages = {};
     this.collections = {};
-    this.collections.my_games = new MyGamesCollection();
-    this.collections.my_games.fetch({
+    this.collections.my_rounds = new MyRoundsCollection();
+    this.collections.my_rounds.fetch({
       data: {
         mine: true
       },
       processData: true
     });
-    this.collections.my_cards = new MyCardsCollection();
-    this.collections.my_cards.fetch();
-    this.add_page(new GamePage({
+    this.collections.my_deeds = new MyDeedsCollection();
+    this.collections.my_deeds.fetch();
+    this.add_page(new RoundPage({
       app: this
     }));
-    this.add_page(new MyGamesPage({
+    this.add_page(new MyRoundsPage({
       app: this,
-      collection: this.collections.my_games
+      collection: this.collections.my_rounds
     }));
-    this.add_page(new AllGamesPage({
+    this.add_page(new AllRoundsPage({
       app: this
     }));
-    this.add_page(new MyCardsPage({
+    this.add_page(new MyDeedsPage({
       app: this
     }));
     this.add_page(new IndexPage({
       app: this
     }));
-    this.current_page = this.pages['my_games'];
+    this.current_page = this.pages['my_rounds'];
     this.router = new PageRouter({
       app: this
     });
     this.sock = new SockJS("/sock");
-    this.sock._games = {};
+    this.sock._rounds = {};
     this.sock.q = [];
     this.sock.onopen = function() {
       return console.log('open');
@@ -92,8 +92,8 @@ App = (function(_super) {
           this.send(m);
         }
       }
-      if (data.type === 'game_event') {
-        return this._games[data.game_id].trigger('server:' + data.event, data.data);
+      if (data.type === 'round_event') {
+        return this._rounds[data.round_id].trigger('server:' + data.event, data.data);
       }
     };
     this.sock.onclose = function() {
@@ -108,18 +108,18 @@ App = (function(_super) {
         return this.send(j);
       }
     };
-    this.sock.game_subscribe = function(game) {
-      this._games[game.id] = game;
+    this.sock.round_subscribe = function(round) {
+      this._rounds[round.id] = round;
       return this.send_data({
-        type: 'game_subscribe',
-        game_id: game.id
+        type: 'round_subscribe',
+        round_id: round.id
       });
     };
-    return this.sock.game_unsubscribe = function(game) {
-      delete this._games[game.id];
+    return this.sock.round_unsubscribe = function(round) {
+      delete this._rounds[round.id];
       return this.send_data({
-        type: 'game_unsubscribe',
-        game_id: game.id
+        type: 'round_unsubscribe',
+        round_id: round.id
       });
     };
   };
@@ -134,23 +134,23 @@ $(document).ready(function() {
 });
 
 
-},{"./router.coffee":5,"./views/pages/all_games.coffee":7,"./views/pages/game.coffee":8,"./views/pages/index.coffee":9,"./views/pages/my_cards.coffee":10,"./views/pages/my_games.coffee":11}],2:[function(require,module,exports){
-var Card, CardCollection, GameCard,
+},{"./router.coffee":5,"./views/pages/all_rounds.coffee":7,"./views/pages/index.coffee":8,"./views/pages/my_deeds.coffee":9,"./views/pages/my_rounds.coffee":10,"./views/pages/round.coffee":11}],2:[function(require,module,exports){
+var Deed, DeedCollection, RoundDeed,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Card = (function(_super) {
-  __extends(Card, _super);
+Deed = (function(_super) {
+  __extends(Deed, _super);
 
-  function Card() {
-    return Card.__super__.constructor.apply(this, arguments);
+  function Deed() {
+    return Deed.__super__.constructor.apply(this, arguments);
   }
 
-  Card.prototype.computeds = {
+  Deed.prototype.computeds = {
     votes: function() {
       var _ref;
-      if (((_ref = this.collection) != null ? _ref.game : void 0) != null) {
-        return this.collection.game.votes_for(this);
+      if (((_ref = this.collection) != null ? _ref.round : void 0) != null) {
+        return this.collection.round.votes_for(this);
       } else {
         return null;
       }
@@ -166,9 +166,9 @@ Card = (function(_super) {
     }
   };
 
-  Card.prototype.defaults = {
+  Deed.prototype.defaults = {
     message: '',
-    title: 'Unnamed card',
+    title: 'Unnamed deed',
     giveback: 0,
     url: '',
     image_url: 'http://imgur.com/jSjxOc2',
@@ -177,51 +177,51 @@ Card = (function(_super) {
     winnings: 0
   };
 
-  return Card;
+  return Deed;
 
 })(Backbone.Epoxy.Model);
 
-GameCard = (function(_super) {
-  __extends(GameCard, _super);
+RoundDeed = (function(_super) {
+  __extends(RoundDeed, _super);
 
-  function GameCard() {
-    return GameCard.__super__.constructor.apply(this, arguments);
+  function RoundDeed() {
+    return RoundDeed.__super__.constructor.apply(this, arguments);
   }
 
-  GameCard.prototype.initialize = function(data, options) {
-    return this.game = options.game || options.collection.game;
+  RoundDeed.prototype.initialize = function(data, options) {
+    return this.round = options.round || options.collection.round;
   };
 
-  GameCard.prototype.urlRoot = function() {
-    return this.game.url() + '/cards';
+  RoundDeed.prototype.urlRoot = function() {
+    return this.round.url() + '/deeds';
   };
 
-  GameCard.prototype.vote = function() {
+  RoundDeed.prototype.vote = function() {
     this.collection.each(function(m) {
       return m.set('has_my_vote', false);
     });
     this.set('has_my_vote', true);
-    return this.game.vote(this);
+    return this.round.vote(this);
   };
 
-  GameCard.prototype.computeds = _.extend(Card.prototype.computeds, {
+  RoundDeed.prototype.computeds = _.extend(Deed.prototype.computeds, {
     can_vote: function() {
-      return this.get('is_mine') === false && this.game.get('status') === 'started';
+      return this.get('is_mine') === false && this.round.get('status') === 'started';
     },
-    game_winnings: {
+    round_winnings: {
       deps: ['giveback'],
       get: function() {
         var _ref;
-        return ((_ref = this.game) != null ? _ref.get('winnings') : void 0) * (1 - this.get('giveback') / 100.0);
+        return ((_ref = this.round) != null ? _ref.get('winnings') : void 0) * (1 - this.get('giveback') / 100.0);
       }
     },
     giveback_per_vote: function() {
       var _ref;
-      return ((((_ref = this.game) != null ? _ref.get('winnings') : void 0) * this.get('giveback') / 100.0) / this.get('votes')).toFixed(2);
+      return ((((_ref = this.round) != null ? _ref.get('winnings') : void 0) * this.get('giveback') / 100.0) / this.get('votes')).toFixed(2);
     },
     giveback_actual: function() {
       var _ref;
-      return (((_ref = this.game) != null ? _ref.get('winnings') : void 0) * this.get('giveback') / 100.0).toFixed(2);
+      return (((_ref = this.round) != null ? _ref.get('winnings') : void 0) * this.get('giveback') / 100.0).toFixed(2);
     },
     nice_giveback_actual: function() {
       return this.get('giveback_actual') + ' mBTC';
@@ -231,34 +231,69 @@ GameCard = (function(_super) {
     }
   });
 
-  return GameCard;
+  return RoundDeed;
 
-})(Card);
+})(Deed);
 
-CardCollection = (function(_super) {
-  __extends(CardCollection, _super);
+DeedCollection = (function(_super) {
+  __extends(DeedCollection, _super);
 
-  function CardCollection() {
-    return CardCollection.__super__.constructor.apply(this, arguments);
+  function DeedCollection() {
+    return DeedCollection.__super__.constructor.apply(this, arguments);
   }
 
-  CardCollection.prototype.model = Card;
+  DeedCollection.prototype.model = Deed;
 
-  CardCollection.prototype.url = '/api/cards';
+  DeedCollection.prototype.url = '/api/deeds';
 
-  return CardCollection;
+  return DeedCollection;
 
 })(Backbone.Collection);
 
 module.exports = {
-  GameCard: GameCard,
-  CardCollection: CardCollection,
-  Card: Card
+  RoundDeed: RoundDeed,
+  DeedCollection: DeedCollection,
+  Deed: Deed
 };
 
 
 },{}],3:[function(require,module,exports){
-var CardCollection, Game, GameCard, GameCardCollection, GameCollection, GameMessageCollection, MessageCollection,
+var Message, MessageCollection,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Message = (function(_super) {
+  __extends(Message, _super);
+
+  function Message() {
+    return Message.__super__.constructor.apply(this, arguments);
+  }
+
+  return Message;
+
+})(Backbone.Epoxy.Model);
+
+MessageCollection = (function(_super) {
+  __extends(MessageCollection, _super);
+
+  function MessageCollection() {
+    return MessageCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  MessageCollection.prototype.model = Message;
+
+  return MessageCollection;
+
+})(Backbone.Collection);
+
+module.exports = {
+  Message: Message,
+  MessageCollection: MessageCollection
+};
+
+
+},{}],4:[function(require,module,exports){
+var DeedCollection, MessageCollection, Round, RoundCollection, RoundDeed, RoundDeedCollection, RoundMessageCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -266,24 +301,24 @@ moment.duration.fn.format = function(format) {
   return moment(this.as('milliseconds')).format(format);
 };
 
-Game = (function(_super) {
-  __extends(Game, _super);
+Round = (function(_super) {
+  __extends(Round, _super);
 
-  function Game() {
-    return Game.__super__.constructor.apply(this, arguments);
+  function Round() {
+    return Round.__super__.constructor.apply(this, arguments);
   }
 
-  Game.prototype.urlRoot = '/api/games';
+  Round.prototype.urlRoot = '/api/rounds';
 
-  Game.prototype.appUrl = function() {
-    return "#games/" + this.id;
+  Round.prototype.appUrl = function() {
+    return "#rounds/" + this.id;
   };
 
-  Game.prototype.votes_for = function(card) {
-    return ((this.get('votes') != null) && this.get('votes')[card.id]) || 0;
+  Round.prototype.votes_for = function(deed) {
+    return ((this.get('votes') != null) && this.get('votes')[deed.id]) || 0;
   };
 
-  Game.prototype.vote = function(card, cb) {
+  Round.prototype.vote = function(deed, cb) {
     var u;
     if (cb == null) {
       cb = $.noop;
@@ -294,7 +329,7 @@ Game = (function(_super) {
       type: "POST",
       contentType: 'application/json',
       data: JSON.stringify({
-        card_id: card.id
+        deed_id: deed.id
       }),
       dataType: 'json',
       success: function(data) {
@@ -303,19 +338,19 @@ Game = (function(_super) {
     });
   };
 
-  Game.prototype.initialize = function(data) {
+  Round.prototype.initialize = function(data) {
     var Message;
-    this.cards = new GameCardCollection([], {
-      game: this
+    this.deeds = new RoundDeedCollection([], {
+      round: this
     });
-    this.cards.fetch({
+    this.deeds.fetch({
       success: (function() {
         this.c().winner.get(true);
-        return this.trigger('fetched_cards');
+        return this.trigger('fetched_deeds');
       }).bind(this)
     });
     Message = require('./message.coffee').Message;
-    this.messages = new GameMessageCollection([
+    this.messages = new RoundMessageCollection([
       new Message({
         time: "16:08",
         message: "Test",
@@ -333,21 +368,21 @@ Game = (function(_super) {
     return this.on({
       'server:joined': function(e) {
         var c;
-        c = new GameCard({
-          id: e.card_id
+        c = new RoundDeed({
+          id: e.deed_id
         }, {
-          game: this
+          round: this
         });
         return c.fetch({
           success: (function(_this) {
             return function() {
-              return _this.cards.add(c);
+              return _this.deeds.add(c);
             };
           })(this)
         });
       },
       'server:left': function(e) {
-        return this.cards.remove(this.cards.at(e.card_id));
+        return this.deeds.remove(this.deeds.at(e.deed_id));
       },
       'server:started': function(e) {
         this.set('status', 'started');
@@ -387,23 +422,23 @@ Game = (function(_super) {
         return this.trigger('change:votes');
       },
       'change:votes': function() {
-        this.cards.each(function(card) {
-          return card.c().votes.get(true);
+        this.deeds.each(function(deed) {
+          return deed.c().votes.get(true);
         });
         return null;
       }
     });
   };
 
-  Game.prototype.computeds = {
+  Round.prototype.computeds = {
     url: function() {
       return this.appUrl();
     },
-    cards: function() {
-      return this.cards;
+    deeds: function() {
+      return this.deeds;
     },
     winner: function() {
-      return this.cards.get(this.get('winner_id'));
+      return this.deeds.get(this.get('winner_id'));
     },
     messages: function() {
       return this.messages;
@@ -445,14 +480,14 @@ Game = (function(_super) {
       return this.get('winnings') + ' mBTC';
     },
     number_of_players: {
-      deps: ['card_ids'],
+      deps: ['deed_ids'],
       get: function() {
-        return _.size(this.get('card_ids'));
+        return _.size(this.get('deed_ids'));
       }
     }
   };
 
-  Game.prototype.send_message = function(message) {
+  Round.prototype.send_message = function(message) {
     return this.messages.add(new Message({
       time: moment().format('HH:mm'),
       message: message,
@@ -460,110 +495,75 @@ Game = (function(_super) {
     }));
   };
 
-  Game.prototype.listen_for_game_events = function() {
-    return window.app.sock.game_subscribe(this);
+  Round.prototype.listen_for_round_events = function() {
+    return window.app.sock.round_subscribe(this);
   };
 
-  return Game;
+  return Round;
 
 })(Backbone.Epoxy.Model);
 
-GameCollection = (function(_super) {
-  __extends(GameCollection, _super);
+RoundCollection = (function(_super) {
+  __extends(RoundCollection, _super);
 
-  function GameCollection() {
-    return GameCollection.__super__.constructor.apply(this, arguments);
+  function RoundCollection() {
+    return RoundCollection.__super__.constructor.apply(this, arguments);
   }
 
-  GameCollection.prototype.model = Game;
+  RoundCollection.prototype.model = Round;
 
-  GameCollection.prototype.url = '/api/games';
+  RoundCollection.prototype.url = '/api/rounds';
 
-  return GameCollection;
+  return RoundCollection;
 
 })(Backbone.Collection);
 
-CardCollection = require('./card.coffee').CardCollection;
+DeedCollection = require('./deed.coffee').DeedCollection;
 
-GameCard = require('./card.coffee').GameCard;
+RoundDeed = require('./deed.coffee').RoundDeed;
 
-GameCardCollection = (function(_super) {
-  __extends(GameCardCollection, _super);
+RoundDeedCollection = (function(_super) {
+  __extends(RoundDeedCollection, _super);
 
-  function GameCardCollection() {
-    return GameCardCollection.__super__.constructor.apply(this, arguments);
+  function RoundDeedCollection() {
+    return RoundDeedCollection.__super__.constructor.apply(this, arguments);
   }
 
-  GameCardCollection.prototype.initialize = function(models, options) {
-    return this.game = options.game;
+  RoundDeedCollection.prototype.initialize = function(models, options) {
+    return this.round = options.round;
   };
 
-  GameCardCollection.prototype.url = function() {
-    return this.game.url() + '/cards';
+  RoundDeedCollection.prototype.url = function() {
+    return this.round.url() + '/deeds';
   };
 
-  GameCardCollection.prototype.model = GameCard;
+  RoundDeedCollection.prototype.model = RoundDeed;
 
-  return GameCardCollection;
+  return RoundDeedCollection;
 
-})(CardCollection);
+})(DeedCollection);
 
 MessageCollection = require('./message.coffee').MessageCollection;
 
-GameMessageCollection = (function(_super) {
-  __extends(GameMessageCollection, _super);
+RoundMessageCollection = (function(_super) {
+  __extends(RoundMessageCollection, _super);
 
-  function GameMessageCollection() {
-    return GameMessageCollection.__super__.constructor.apply(this, arguments);
+  function RoundMessageCollection() {
+    return RoundMessageCollection.__super__.constructor.apply(this, arguments);
   }
 
-  return GameMessageCollection;
+  return RoundMessageCollection;
 
 })(MessageCollection);
 
 module.exports = {
-  Game: Game,
-  GameCollection: GameCollection,
-  GameCardCollection: GameCardCollection
+  Round: Round,
+  RoundCollection: RoundCollection,
+  RoundDeedCollection: RoundDeedCollection
 };
 
 
-},{"./card.coffee":2,"./message.coffee":4}],4:[function(require,module,exports){
-var Message, MessageCollection,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Message = (function(_super) {
-  __extends(Message, _super);
-
-  function Message() {
-    return Message.__super__.constructor.apply(this, arguments);
-  }
-
-  return Message;
-
-})(Backbone.Epoxy.Model);
-
-MessageCollection = (function(_super) {
-  __extends(MessageCollection, _super);
-
-  function MessageCollection() {
-    return MessageCollection.__super__.constructor.apply(this, arguments);
-  }
-
-  MessageCollection.prototype.model = Message;
-
-  return MessageCollection;
-
-})(Backbone.Collection);
-
-module.exports = {
-  Message: Message,
-  MessageCollection: MessageCollection
-};
-
-
-},{}],5:[function(require,module,exports){
+},{"./deed.coffee":2,"./message.coffee":3}],5:[function(require,module,exports){
 var PageRouter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -580,12 +580,12 @@ PageRouter = (function(_super) {
     PageRouter.__super__.initialize.apply(this, arguments);
     this.app = options.app;
     this.route('', 'main');
-    this.route_page(/^games\/(\d+)$/, 'game');
-    this.route('games/join/', 'games_join');
-    this.route_page('games/', 'games');
-    this.route_page('games/mine/', 'my_games');
-    this.route_page('cards/mine/', 'my_cards');
-    return this.route('cards/mine/create', 'create_card');
+    this.route_page(/^rounds\/(\d+)$/, 'round');
+    this.route('rounds/join/', 'rounds_join');
+    this.route_page('rounds/', 'rounds');
+    this.route_page('rounds/mine/', 'my_rounds');
+    this.route_page('deeds/mine/', 'my_deeds');
+    return this.route('deeds/mine/create', 'create_deed');
   };
 
   PageRouter.prototype.route_page = function(pattern, name) {
@@ -596,14 +596,14 @@ PageRouter = (function(_super) {
     });
   };
 
-  PageRouter.prototype.games_join = function() {
-    this.app.show_page('my_games');
-    return this.app.pages.my_games.$('a.join.btn').click();
+  PageRouter.prototype.rounds_join = function() {
+    this.app.show_page('my_rounds');
+    return this.app.pages.my_rounds.$('a.join.btn').click();
   };
 
-  PageRouter.prototype.create_card = function() {
-    this.app.show_page('my_cards');
-    return this.app.pages.my_cards.$('#create-card-btn').click();
+  PageRouter.prototype.create_deed = function() {
+    this.app.show_page('my_deeds');
+    return this.app.pages.my_deeds.$('#create-deed-btn').click();
   };
 
   PageRouter.prototype.setup = function(name) {
@@ -613,7 +613,7 @@ PageRouter = (function(_super) {
   };
 
   PageRouter.prototype.main = function() {
-    return this.navigate('games/mine/', {
+    return this.navigate('rounds/mine/', {
       trigger: true,
       replace: true
     });
@@ -668,296 +668,46 @@ module.exports = Page;
 
 
 },{}],7:[function(require,module,exports){
-var AllGamesPage, GamesListView, Page,
+var AllRoundsPage, Page, RoundsListView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Page = require('../page.coffee');
 
-GamesListView = (function(_super) {
-  __extends(GamesListView, _super);
+RoundsListView = (function(_super) {
+  __extends(RoundsListView, _super);
 
-  function GamesListView() {
-    return GamesListView.__super__.constructor.apply(this, arguments);
+  function RoundsListView() {
+    return RoundsListView.__super__.constructor.apply(this, arguments);
   }
 
-  return GamesListView;
+  return RoundsListView;
 
 })(Backbone.Epoxy.View);
 
-AllGamesPage = (function(_super) {
-  __extends(AllGamesPage, _super);
+AllRoundsPage = (function(_super) {
+  __extends(AllRoundsPage, _super);
 
-  function AllGamesPage() {
-    return AllGamesPage.__super__.constructor.apply(this, arguments);
+  function AllRoundsPage() {
+    return AllRoundsPage.__super__.constructor.apply(this, arguments);
   }
 
-  AllGamesPage.prototype.name = 'all_games';
+  AllRoundsPage.prototype.name = 'all_rounds';
 
-  AllGamesPage.prototype.initialize = function(options) {
-    return this.listview = new GamesListView({
-      collection: options.games_list
+  AllRoundsPage.prototype.initialize = function(options) {
+    return this.listview = new RoundsListView({
+      collection: options.rounds_list
     });
   };
 
-  return AllGamesPage;
+  return AllRoundsPage;
 
 })(Page);
 
-module.exports = AllGamesPage;
+module.exports = AllRoundsPage;
 
 
 },{"../page.coffee":6}],8:[function(require,module,exports){
-var Card, Game, GameCardListItemView, GameCardListView, GameEndedView, GameMessageCollection, GameMessageListItemView, GameMessageListView, GameMessagesView, GamePage, GameView, MessageCollection, Page, card, game,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-Page = require('../page.coffee');
-
-card = require('../../models/card.coffee');
-
-game = require('../../models/game.coffee');
-
-Game = game.Game;
-
-Card = card.Card;
-
-MessageCollection = require('../../models/message.coffee').MessageCollection;
-
-GameCardListItemView = (function(_super) {
-  __extends(GameCardListItemView, _super);
-
-  function GameCardListItemView() {
-    return GameCardListItemView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameCardListItemView.prototype.el = "<li classes:{voted:has_my_vote, mine:is_mine}>\n    <h3 data-bind=\"text:title\">Title</h3>\n    <img data-bind=\"attr:{src:image_url}\" />\n    <div class=\"votes\" data-bind=\"text:votes\"></div>\n    <div class=\"full-card hidden\">\n    	<div class=\"img-container\">\n    		<img data-bind=\"attr:{src:image_url}\" />\n    		<h3 data-bind=\"text:title\">Name</h3>\n    		<div class=\"giveback\"><span><strong data-bind=\"text:giveback\">90</strong>%</span> giveback</div>\n    	</div>\n        <div class=\"message\" data-bind=\"text:message\"></div>\n        <div class=\"ratings\">\n            <div class=\"credibility\"><strong>Credibility</strong><span data-bind=\"text:credibility\">50</span>%</div>\n            <div class=\"longevity\"><strong>Longevity</strong><span data-bind=\"text:longevity\">6</span> games</div>\n            <div class=\"winnings\"><strong>Winnings</strong><span data-bind=\"text:winnings\">501 mBTC</span></div>\n            	<div class=\"url\"><strong>Url</strong> <span data-bind=\"toggle:none(url)\">[no url]</span><a data-bind=\"text:url,attr:{href:url}\">View</a></div>\n        </div>\n        <button class=\"btn vote\" data-bind=\"toggle:can_vote,attr:{disabled:has_my_vote},text:select(has_my_vote, 'Voted!', 'Vote')\">Vote</button>\n    </div>\n</li>";
-
-  GameCardListItemView.prototype.events = {
-    'click h3, img': function(e) {
-      e.preventDefault();
-      return this.$('.full-card').toggleClass('hidden');
-    },
-    'click button.vote': function(e) {
-      e.preventDefault();
-      $(e.currentTarget).text('Voting...').attr('disabled', 'disabled');
-      return this.model.vote();
-    }
-  };
-
-  return GameCardListItemView;
-
-})(Backbone.Epoxy.View);
-
-GameMessageListItemView = (function(_super) {
-  __extends(GameMessageListItemView, _super);
-
-  function GameMessageListItemView() {
-    return GameMessageListItemView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameMessageListItemView.prototype.el = "<li data-bind=\"classes:{mine:is_mine}\">\n	<time data-bind=\"text:time\"></time>\n	<span data-bind=\"text:message\"></span>\n</li>";
-
-  return GameMessageListItemView;
-
-})(Backbone.Epoxy.View);
-
-GameCardListView = (function(_super) {
-  __extends(GameCardListView, _super);
-
-  function GameCardListView() {
-    return GameCardListView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameCardListView.prototype.bindings = {
-    ':el': "collection:$collection"
-  };
-
-  GameCardListView.prototype.itemView = GameCardListItemView;
-
-  return GameCardListView;
-
-})(Backbone.Epoxy.View);
-
-GameMessageCollection = (function(_super) {
-  __extends(GameMessageCollection, _super);
-
-  function GameMessageCollection() {
-    return GameMessageCollection.__super__.constructor.apply(this, arguments);
-  }
-
-  GameMessageCollection.prototype.view = GameMessageListItemView;
-
-  return GameMessageCollection;
-
-})(MessageCollection);
-
-GameMessageListView = (function(_super) {
-  __extends(GameMessageListView, _super);
-
-  function GameMessageListView() {
-    return GameMessageListView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameMessageListView.prototype.el = "ul#game-messages";
-
-  GameMessageListView.prototype.bindings = {
-    ':el': "collection:$collection"
-  };
-
-  GameMessageListView.prototype.itemView = GameMessageListItemView;
-
-  return GameMessageListView;
-
-})(Backbone.Epoxy.View);
-
-GameMessagesView = (function(_super) {
-  __extends(GameMessagesView, _super);
-
-  function GameMessagesView() {
-    return GameMessagesView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameMessagesView.prototype.initialize = function(options) {
-    return this.list_view = new GameMessageListView({
-      collection: options.model.get('messages')
-    });
-  };
-
-  GameMessagesView.prototype.events = {
-    'keydown .chatbox': 'onEnter'
-  };
-
-  GameMessagesView.prototype.onEnter = function(e) {
-    if (e.which === 13) {
-      e.preventDefault();
-      this.model.send_message(this.$('.chatbox').val());
-      this.$('.chatbox').val('');
-      return this.$('ul#game-messages').scrollTop(this.$('ul#game-messages').height());
-    }
-  };
-
-  return GameMessagesView;
-
-})(Backbone.View);
-
-GameEndedView = (function(_super) {
-  __extends(GameEndedView, _super);
-
-  function GameEndedView() {
-    return GameEndedView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameEndedView.prototype.el = '<div class="ended">\n	<h3>Winner: <strong data-bind="text:winner_title">Title</strong></h3>\n	<img data-bind="attr:{src:winner_image_url}" />\n	<div>Votes: <strong data-bind="text:winner_votes"></strong></div>\n	<div>Total won: <strong data-bind="text:nice_winnings"></strong></div>\n	<div>Given back: <strong data-bind="text:winner_nice_giveback_actual"></strong></div>\n	<p data-bind="toggle:voted_for_winner"><span data-bind="text:winner_other_votes"></span> other people voted for this card. Since giveback was <span data-bind="text:winner_nice_giveback">50%</span>, you got <span data-bind="text:winner_nice_giveback_per_vote"></span> back!</p>\n</div>';
-
-  GameEndedView.prototype.initialize = function(options) {
-    return this.bindingSources = {
-      winner: function() {
-        return options.model.get('winner');
-      }
-    };
-  };
-
-  return GameEndedView;
-
-})(Backbone.Epoxy.View);
-
-GameView = (function(_super) {
-  __extends(GameView, _super);
-
-  function GameView() {
-    this.tick = __bind(this.tick, this);
-    return GameView.__super__.constructor.apply(this, arguments);
-  }
-
-  GameView.prototype.el = '#page_game';
-
-  GameView.prototype.bindings = {
-    'div.status div.status-text': 'text:nice_status,attr:{"data-status":status}',
-    'time.timer': 'text:timeleft',
-    'div.pane div.stake span': 'text:stake',
-    'div.pane div.potential span': 'text:potential_winnings'
-  };
-
-  GameView.prototype.initialize = function(options) {
-    var initEndedView;
-    options.model.listen_for_game_events();
-    initEndedView = function() {
-      var _ref;
-      if (this.model.get('status') === 'ended') {
-        if ((_ref = this.GameCardListView) != null) {
-          _ref.destroy();
-        }
-        this.$('.pane.cards').hide();
-        this.ended_view = new GameEndedView({
-          model: this.model
-        });
-        return this.$('#ended-pane').html(this.ended_view.$el).show();
-      }
-    };
-    this.model.on('end', initEndedView.bind(this));
-    if (this.model.cards == null) {
-      this.model.on('fetched_cards', initEndedView.bind(this));
-    } else {
-      initEndedView.bind(this)();
-    }
-    if (this.model.get('status') !== 'ended') {
-      this.cards_view = new GameCardListView({
-        collection: options.model.cards,
-        el: this.$('#game-card-list').get()
-      });
-    }
-    this.messages_view = new GameMessagesView({
-      model: options.model,
-      el: this.$("#game-messages-pane").get()
-    });
-    if (!this._timer) {
-      return this._timer = setInterval(this.tick, 100);
-    }
-  };
-
-  GameView.prototype.tick = function() {
-    return this.model.c().timeleft.get(true);
-  };
-
-  return GameView;
-
-})(Backbone.Epoxy.View);
-
-GamePage = (function(_super) {
-  __extends(GamePage, _super);
-
-  function GamePage() {
-    return GamePage.__super__.constructor.apply(this, arguments);
-  }
-
-  GamePage.prototype.name = 'game';
-
-  GamePage.prototype.show = function(id) {
-    var g, p;
-    GamePage.__super__.show.apply(this, arguments);
-    g = new Game({
-      id: id
-    });
-    p = this;
-    return g.fetch({
-      success: function() {
-        return p.gameview = new GameView({
-          model: g
-        });
-      }
-    });
-  };
-
-  return GamePage;
-
-})(Page);
-
-module.exports = GamePage;
-
-
-},{"../../models/card.coffee":2,"../../models/game.coffee":3,"../../models/message.coffee":4,"../page.coffee":6}],9:[function(require,module,exports){
 var IndexPage, Page,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -980,72 +730,72 @@ IndexPage = (function(_super) {
 module.exports = IndexPage;
 
 
-},{"../page.coffee":6}],10:[function(require,module,exports){
-var Card, CardCollection, MyCardView, MyCardsCollection, MyCardsListItemView, MyCardsListView, MyCardsPage, Page,
+},{"../page.coffee":6}],9:[function(require,module,exports){
+var Deed, DeedCollection, MyDeedView, MyDeedsCollection, MyDeedsListItemView, MyDeedsListView, MyDeedsPage, Page,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Card = require('../../models/card.coffee').Card;
+Deed = require('../../models/deed.coffee').Deed;
 
-CardCollection = require('../../models/card.coffee').CardCollection;
+DeedCollection = require('../../models/deed.coffee').DeedCollection;
 
 Page = require('../page.coffee');
 
-MyCardsCollection = (function(_super) {
-  __extends(MyCardsCollection, _super);
+MyDeedsCollection = (function(_super) {
+  __extends(MyDeedsCollection, _super);
 
-  function MyCardsCollection() {
-    return MyCardsCollection.__super__.constructor.apply(this, arguments);
+  function MyDeedsCollection() {
+    return MyDeedsCollection.__super__.constructor.apply(this, arguments);
   }
 
-  return MyCardsCollection;
+  return MyDeedsCollection;
 
-})(CardCollection);
+})(DeedCollection);
 
-MyCardsListItemView = (function(_super) {
-  __extends(MyCardsListItemView, _super);
+MyDeedsListItemView = (function(_super) {
+  __extends(MyDeedsListItemView, _super);
 
-  function MyCardsListItemView() {
-    return MyCardsListItemView.__super__.constructor.apply(this, arguments);
+  function MyDeedsListItemView() {
+    return MyDeedsListItemView.__super__.constructor.apply(this, arguments);
   }
 
-  MyCardsListItemView.prototype.el = "<li data-bind=\"attr:{'data-cid': $model().cid}\">\n	<img data-bind=\"attr:{src:image_url}\" />\n	<div>\n		<h4 data-bind=\"text:title\"></h4>\n		<div class=\"data\">\n            <div class=\"credibility\"><span data-bind=\"text:credibility\">50</span>% credibility</div>\n            <div class=\"longevity\"><span data-bind=\"text:longevity\">6</span> games</div>\n            <div class=\"winnings\">won <span data-bind=\"text:nice_winnings\">501 mBTC</span></div>\n        </div>\n    </div>\n	    </li>";
+  MyDeedsListItemView.prototype.el = "<li data-bind=\"attr:{'data-cid': $model().cid}\">\n	<img data-bind=\"attr:{src:image_url}\" />\n	<div>\n		<h4 data-bind=\"text:title\"></h4>\n		<div class=\"data\">\n            <div class=\"credibility\"><span data-bind=\"text:credibility\">50</span>% credibility</div>\n            <div class=\"longevity\"><span data-bind=\"text:longevity\">6</span> rounds</div>\n            <div class=\"winnings\">won <span data-bind=\"text:nice_winnings\">501 mBTC</span></div>\n        </div>\n    </div>\n	    </li>";
 
-  return MyCardsListItemView;
+  return MyDeedsListItemView;
 
 })(Backbone.Epoxy.View);
 
-MyCardsListView = (function(_super) {
-  __extends(MyCardsListView, _super);
+MyDeedsListView = (function(_super) {
+  __extends(MyDeedsListView, _super);
 
-  function MyCardsListView() {
-    return MyCardsListView.__super__.constructor.apply(this, arguments);
+  function MyDeedsListView() {
+    return MyDeedsListView.__super__.constructor.apply(this, arguments);
   }
 
-  MyCardsListView.prototype.el = 'ul#my-cards-list';
+  MyDeedsListView.prototype.el = 'ul#my-deeds-list';
 
-  MyCardsListView.prototype.bindings = {
+  MyDeedsListView.prototype.bindings = {
     ':el': 'collection:$collection'
   };
 
-  MyCardsListView.prototype.itemView = MyCardsListItemView;
+  MyDeedsListView.prototype.itemView = MyDeedsListItemView;
 
-  return MyCardsListView;
+  return MyDeedsListView;
 
 })(Backbone.Epoxy.View);
 
-MyCardView = (function(_super) {
-  __extends(MyCardView, _super);
+MyDeedView = (function(_super) {
+  __extends(MyDeedView, _super);
 
-  function MyCardView() {
-    return MyCardView.__super__.constructor.apply(this, arguments);
+  function MyDeedView() {
+    return MyDeedView.__super__.constructor.apply(this, arguments);
   }
 
-  MyCardView.prototype.el = "<div class=\"card\">\n<div class=\"full-card\">\n	<div class=\"img-container\">\n		<img data-bind=\"attr:{src:image_url}\" />\n		<h3 class=\"title\" data-bind=\"text:title\">Name</h3>\n		<div class=\"giveback\"><span><strong data-bind=\"text:giveback\" class=\"givebackval\">90</strong>%</span> giveback</div>\n	</div>\n    <div class=\"message\" data-bind=\"text:message\"></div>\n    <div class=\"ratings\">\n        <div class=\"credibility\"><strong>Credibility</strong><span data-bind=\"text:credibility\">50</span>%</div>\n        <div class=\"longevity\"><strong>Longevity</strong><span data-bind=\"text:longevity\">6</span> games</div>\n        <div class=\"winnings\"><strong>Winnings</strong><span data-bind=\"text:nice_winnings\">501 mBTC</span></div>\n            	<div class=\"url\"><strong>Url</strong> <span data-bind=\"toggle:none(url)\">[no url]</span><a data-bind=\"text:url,attr:{href:url}\">View</a></div>\n    </div>\n    <button class=\"btn edit\">Edit</button>\n</div>\n    	 <form class=\"edit-card form-horizontal\" style=\"display:none;\"> \n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_title\" style=\"display:none;\">Title</label>\n        		<div class=\"col-sm-12\"><input type=\"text\" id=\"id_title\" name=\"title\" placeholder=\"title\" class=\"form-control input-lg\"/></div>\n        	</div>\n        	<div class='form-group'>\n        		<label class=\"col-sm-2 control-label\" for=\"id_giveback\">Giveback percentage</label>\n        		<div class=\"col-sm-10\"><input type=\"number\" name=\"giveback\" min=\"0\" max=\"100\" step=\"1\" class=\"form-control\" /></div>\n        	</div>\n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_url\">URL</label>\n        		<div class=\"col-sm-10\"><input type=\"url\" name=\"url\" id=\"id_url\" class=\"form-control\"/></div>\n        	</div>\n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_message\">Message</label>\n        		<div class=\"col-sm-10\"><textarea name=\"message\" id=\"id_message\" class=\"form-control\"></textarea></div>\n        	</div>\n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_image\">Image</label>\n        		<div class=\"col-sm-10\"><input type=\"url\" name=\"image_url\" id=\"id_image\" class=\"form-control\"/></div>\n        	</div>\n        	<button class=\"btn btn-success\" type=\"submit\">Save</button>\n    		<button class=\"btn cancel\" type=\"reset\">Cancel</button>\n        </form></div>";
+  MyDeedView.prototype.el = "<div class=\"deed\">\n<div class=\"full-deed\">\n	<div class=\"img-container\">\n		<img data-bind=\"attr:{src:image_url}\" />\n		<h3 class=\"title\" data-bind=\"text:title\">Name</h3>\n		<div class=\"giveback\"><span><strong data-bind=\"text:giveback\" class=\"givebackval\">90</strong>%</span> giveback</div>\n	</div>\n    <div class=\"message\" data-bind=\"text:message\"></div>\n    <div class=\"ratings\">\n        <div class=\"credibility\"><strong>Credibility</strong><span data-bind=\"text:credibility\">50</span>%</div>\n        <div class=\"longevity\"><strong>Longevity</strong><span data-bind=\"text:longevity\">6</span> rounds</div>\n        <div class=\"winnings\"><strong>Winnings</strong><span data-bind=\"text:nice_winnings\">501 mBTC</span></div>\n            	<div class=\"url\"><strong>Url</strong> <span data-bind=\"toggle:none(url)\">[no url]</span><a data-bind=\"text:url,attr:{href:url}\">View</a></div>\n    </div>\n    <button class=\"btn edit\">Edit</button>\n</div>\n    	 <form class=\"edit-deed form-horizontal\" style=\"display:none;\"> \n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_title\" style=\"display:none;\">Title</label>\n        		<div class=\"col-sm-12\"><input type=\"text\" id=\"id_title\" name=\"title\" placeholder=\"title\" class=\"form-control input-lg\"/></div>\n        	</div>\n        	<div class='form-group'>\n        		<label class=\"col-sm-2 control-label\" for=\"id_giveback\">Giveback percentage</label>\n        		<div class=\"col-sm-10\"><input type=\"number\" name=\"giveback\" min=\"0\" max=\"100\" step=\"1\" class=\"form-control\" /></div>\n        	</div>\n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_url\">URL</label>\n        		<div class=\"col-sm-10\"><input type=\"url\" name=\"url\" id=\"id_url\" class=\"form-control\"/></div>\n        	</div>\n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_message\">Message</label>\n        		<div class=\"col-sm-10\"><textarea name=\"message\" id=\"id_message\" class=\"form-control\"></textarea></div>\n        	</div>\n        	<div class=\"form-group\">\n        		<label class=\"col-sm-2 control-label\" for=\"id_image\">Image</label>\n        		<div class=\"col-sm-10\"><input type=\"url\" name=\"image_url\" id=\"id_image\" class=\"form-control\"/></div>\n        	</div>\n        	<button class=\"btn btn-success\" type=\"submit\">Save</button>\n    		<button class=\"btn cancel\" type=\"reset\">Cancel</button>\n        </form></div>";
 
-  MyCardView.prototype.onEdit = function(e) {
+  MyDeedView.prototype.onEdit = function(e) {
     e.preventDefault();
-    this.$('.full-card').hide();
+    this.$('.full-deed').hide();
     this.$('form input[name=title]').val(this.model.get('title'));
     this.$('form input[name=image_url]').val(this.model.get('image_url'));
     this.$('form input[name=url]').val(this.model.get('url'));
@@ -1054,13 +804,13 @@ MyCardView = (function(_super) {
     return this.$('form').show();
   };
 
-  MyCardView.prototype.events = {
+  MyDeedView.prototype.events = {
     'click button.edit': 'onEdit',
     'submit form': 'onSubmit',
     'click button.cancel': 'onCancel'
   };
 
-  MyCardView.prototype.onSubmit = function(e) {
+  MyDeedView.prototype.onSubmit = function(e) {
     var n, updates, _i, _len, _ref;
     e.preventDefault();
     updates = {};
@@ -1072,142 +822,142 @@ MyCardView = (function(_super) {
     this.model.save(updates, {
       patch: true,
       success: function(c, d, xhr) {
-        c.set('id', d.card_id);
+        c.set('id', d.deed_id);
         return c.collection.trigger('change');
       }
     });
     this.$('form').hide();
-    return this.$('.full-card').show();
+    return this.$('.full-deed').show();
   };
 
-  MyCardView.prototype.onCancel = function(e) {
+  MyDeedView.prototype.onCancel = function(e) {
     if (this.model.isNew()) {
       this.model.destroy();
     }
     this.$('form').hide();
-    return this.$('.full-card').show();
+    return this.$('.full-deed').show();
   };
 
-  return MyCardView;
+  return MyDeedView;
 
 })(Backbone.Epoxy.View);
 
-MyCardsPage = (function(_super) {
-  __extends(MyCardsPage, _super);
+MyDeedsPage = (function(_super) {
+  __extends(MyDeedsPage, _super);
 
-  function MyCardsPage() {
-    return MyCardsPage.__super__.constructor.apply(this, arguments);
+  function MyDeedsPage() {
+    return MyDeedsPage.__super__.constructor.apply(this, arguments);
   }
 
-  MyCardsPage.prototype.name = 'my_cards';
+  MyDeedsPage.prototype.name = 'my_deeds';
 
-  MyCardsPage.prototype.bindings = {
-    'div.pane.header div.cards span': 'text:length($collection)'
+  MyDeedsPage.prototype.bindings = {
+    'div.pane.header div.deeds span': 'text:length($collection)'
   };
 
-  MyCardsPage.prototype.events = {
-    'click ul#my-cards-list li': 'onLiClick',
+  MyDeedsPage.prototype.events = {
+    'click ul#my-deeds-list li': 'onLiClick',
     'click .pane.header .new button': 'onAdd'
   };
 
-  MyCardsPage.prototype.initialize = function() {
-    this.collection = this.app.collections.my_cards;
-    return this.listview = new MyCardsListView({
+  MyDeedsPage.prototype.initialize = function() {
+    this.collection = this.app.collections.my_deeds;
+    return this.listview = new MyDeedsListView({
       collection: this.collection
     });
   };
 
-  MyCardsPage.prototype.onLiClick = function(e) {
-    return this.showCard($(e.currentTarget));
+  MyDeedsPage.prototype.onLiClick = function(e) {
+    return this.showDeed($(e.currentTarget));
   };
 
-  MyCardsPage.prototype.showCard = function($li) {
-    this.$('ul#my-cards-list li').removeClass('active');
+  MyDeedsPage.prototype.showDeed = function($li) {
+    this.$('ul#my-deeds-list li').removeClass('active');
     $li.addClass('active');
-    this.view = new MyCardView({
+    this.view = new MyDeedView({
       model: this.collection.get($li.attr('data-cid'))
     });
-    return this.$('#card-view').html(this.view.$el);
+    return this.$('#deed-view').html(this.view.$el);
   };
 
-  MyCardsPage.prototype.onAdd = function() {
+  MyDeedsPage.prototype.onAdd = function() {
     var c;
-    c = new Card();
+    c = new Deed();
     this.collection.add(c);
-    this.showCard($("ul#my-cards-list li[data-cid=" + c.cid + "]"));
+    this.showDeed($("ul#my-deeds-list li[data-cid=" + c.cid + "]"));
     return this.view.$('button.edit').click();
   };
 
-  return MyCardsPage;
+  return MyDeedsPage;
 
 })(Page);
 
 module.exports = {
-  MyCardsPage: MyCardsPage,
-  MyCardsCollection: MyCardsCollection
+  MyDeedsPage: MyDeedsPage,
+  MyDeedsCollection: MyDeedsCollection
 };
 
 
-},{"../../models/card.coffee":2,"../page.coffee":6}],11:[function(require,module,exports){
-var Card, Game, GameCollection, JoinGameItemView, JoinGameOptionView, JoinGameView, MyGamesCollection, MyGamesListItemView, MyGamesListView, MyGamesPage, Page, card, game,
+},{"../../models/deed.coffee":2,"../page.coffee":6}],10:[function(require,module,exports){
+var Deed, JoinRoundItemView, JoinRoundOptionView, JoinRoundView, MyRoundsCollection, MyRoundsListItemView, MyRoundsListView, MyRoundsPage, Page, Round, RoundCollection, deed, round,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Page = require('../page.coffee');
 
-card = require('../../models/card.coffee');
+deed = require('../../models/deed.coffee');
 
-game = require('../../models/game.coffee');
+round = require('../../models/round.coffee');
 
-Game = game.Game;
+Round = round.Round;
 
-Card = card.Card;
+Deed = deed.Deed;
 
-GameCollection = game.GameCollection;
+RoundCollection = round.RoundCollection;
 
-JoinGameOptionView = (function() {
-  function JoinGameOptionView() {}
+JoinRoundOptionView = (function() {
+  function JoinRoundOptionView() {}
 
-  JoinGameOptionView.prototype.el = "<option name=\"value\">";
+  JoinRoundOptionView.prototype.el = "<option name=\"value\">";
 
-  return JoinGameOptionView;
+  return JoinRoundOptionView;
 
 })();
 
-JoinGameItemView = (function(_super) {
-  __extends(JoinGameItemView, _super);
+JoinRoundItemView = (function(_super) {
+  __extends(JoinRoundItemView, _super);
 
-  function JoinGameItemView() {
-    return JoinGameItemView.__super__.constructor.apply(this, arguments);
+  function JoinRoundItemView() {
+    return JoinRoundItemView.__super__.constructor.apply(this, arguments);
   }
 
-  JoinGameItemView.prototype.el = '#join-game-form #select-card';
+  JoinRoundItemView.prototype.el = '#join-round-form #select-deed';
 
-  JoinGameItemView.prototype.bindings = {
+  JoinRoundItemView.prototype.bindings = {
     el: 'collection:$collection',
-    itemView: JoinGameOptionView
+    itemView: JoinRoundOptionView
   };
 
-  return JoinGameItemView;
+  return JoinRoundItemView;
 
 })(Backbone.Epoxy.View);
 
-JoinGameView = (function(_super) {
-  __extends(JoinGameView, _super);
+JoinRoundView = (function(_super) {
+  __extends(JoinRoundView, _super);
 
-  function JoinGameView() {
-    return JoinGameView.__super__.constructor.apply(this, arguments);
+  function JoinRoundView() {
+    return JoinRoundView.__super__.constructor.apply(this, arguments);
   }
 
-  JoinGameView.prototype.el = '#join-game-form';
+  JoinRoundView.prototype.el = '#join-round-form';
 
-  JoinGameView.prototype.events = {
+  JoinRoundView.prototype.events = {
     'submit': 'onSubmit'
   };
 
-  JoinGameView.prototype.initialize = function(options) {
+  JoinRoundView.prototype.initialize = function(options) {
     var format, getData, init_s2;
-    this.cards = options.cards;
+    this.deeds = options.deeds;
     getData = function(collection) {
       var l;
       l = collection.map(function(c) {
@@ -1219,22 +969,22 @@ JoinGameView = (function(_super) {
       });
       l.push({
         id: '',
-        text: 'Create card'
+        text: 'Create deed'
       });
       return l;
     };
-    format = function(card) {
+    format = function(deed) {
       var t;
       t = '';
-      if (card.model) {
-        t = "<img style=\"height:80px; padding:5px 5px 5px 0; vertical-align:middle;\" src=\"" + (card.model.get('image_url')) + "\" /> ";
+      if (deed.model) {
+        t = "<img style=\"height:80px; padding:5px 5px 5px 0; vertical-align:middle;\" src=\"" + (deed.model.get('image_url')) + "\" /> ";
       }
-      t += card.text;
+      t += deed.text;
       return t;
     };
     init_s2 = (function() {
-      return this.$('#select-card').select2({
-        data: getData(this.cards),
+      return this.$('#select-deed').select2({
+        data: getData(this.deeds),
         formatResult: format,
         formatSelection: format,
         escapeMarkup: function(m) {
@@ -1242,133 +992,383 @@ JoinGameView = (function(_super) {
         }
       });
     }).bind(this);
-    this.cards.on('add reset remove change', function() {
+    this.deeds.on('add reset remove change', function() {
       return init_s2();
     });
     window.init_s2 = init_s2;
     return init_s2();
   };
 
-  JoinGameView.prototype.onSubmit = function(e) {
+  JoinRoundView.prototype.onSubmit = function(e) {
     var data;
     e.preventDefault();
     data = {
       stake: this.$("input[name=stake]:checked").val(),
-      card_id: this.$('input#select-card').val()
+      deed_id: this.$('input#select-deed').val()
     };
-    if (!data.card_id) {
-      app.router.go('#cards/mine/create');
-      $('#joinGameModal button.close').click();
+    if (!data.deed_id) {
+      app.router.go('#deeds/mine/create');
+      $('#joinRoundModal button.close').click();
       return false;
     }
     this.$('button[type=submit]').html("Joining...").addClass('active');
     return $.ajax({
       type: 'PUT',
-      url: Game.prototype.urlRoot,
+      url: Round.prototype.urlRoot,
       contentType: 'application/json',
       data: JSON.stringify(data),
       dataType: 'json',
       success: function(data) {
         var g;
-        g = new Game(data);
-        app.collections.my_games.add(g);
+        g = new Round(data);
+        app.collections.my_rounds.add(g);
         app.router.go(g.appUrl());
-        return $('#joinGameModal button.close').click();
+        return $('#joinRoundModal button.close').click();
       }
     });
   };
 
-  return JoinGameView;
+  return JoinRoundView;
 
 })(Backbone.Epoxy.View);
 
-MyGamesListView = (function(_super) {
-  __extends(MyGamesListView, _super);
+MyRoundsListView = (function(_super) {
+  __extends(MyRoundsListView, _super);
 
-  function MyGamesListView() {
-    return MyGamesListView.__super__.constructor.apply(this, arguments);
+  function MyRoundsListView() {
+    return MyRoundsListView.__super__.constructor.apply(this, arguments);
   }
 
-  MyGamesListView.prototype.bindings = {
+  MyRoundsListView.prototype.bindings = {
     ':el': "collection:$collection"
   };
 
-  MyGamesListView.prototype.initialize = function(options) {
+  MyRoundsListView.prototype.initialize = function(options) {
     console.log(options);
     return console.log(this);
   };
 
-  return MyGamesListView;
+  return MyRoundsListView;
 
 })(Backbone.Epoxy.View);
 
-MyGamesListItemView = (function(_super) {
-  __extends(MyGamesListItemView, _super);
+MyRoundsListItemView = (function(_super) {
+  __extends(MyRoundsListItemView, _super);
 
-  function MyGamesListItemView() {
-    return MyGamesListItemView.__super__.constructor.apply(this, arguments);
+  function MyRoundsListItemView() {
+    return MyRoundsListItemView.__super__.constructor.apply(this, arguments);
   }
 
-  MyGamesListItemView.prototype.el = "<li>\n	<a data-bind=\"attr:{href:url, class:status}\">\n		<div class=\"info\">\n			<div class=\"cards\"><span data-bind=\"text:number_of_players\"></span> cards</div>\n			<div class=\"stake\" data-bind=\"text:nice_stake\"></div>\n			<div class=\"status\" data-bind=\"text:nice_status\"></div>\n		</div>\n		<div class=\"time\" data-bind=\"toggle:is_active,text:timeleft\"></div>\n	</a>\n</li>";
+  MyRoundsListItemView.prototype.el = "<li>\n	<a data-bind=\"attr:{href:url, class:status}\">\n		<div class=\"info\">\n			<div class=\"deeds\"><span data-bind=\"text:number_of_players\"></span> deeds</div>\n			<div class=\"stake\" data-bind=\"text:nice_stake\"></div>\n			<div class=\"status\" data-bind=\"text:nice_status\"></div>\n		</div>\n		<div class=\"time\" data-bind=\"toggle:is_active,text:timeleft\"></div>\n	</a>\n</li>";
 
-  MyGamesListItemView.prototype.events = {
+  MyRoundsListItemView.prototype.events = {
     'click a': function(e) {
       e.preventDefault();
       return app.router.go($(e.currentTarget).attr('href'));
     }
   };
 
-  return MyGamesListItemView;
+  return MyRoundsListItemView;
 
 })(Backbone.Epoxy.View);
 
-MyGamesCollection = (function(_super) {
-  __extends(MyGamesCollection, _super);
+MyRoundsCollection = (function(_super) {
+  __extends(MyRoundsCollection, _super);
 
-  function MyGamesCollection() {
-    return MyGamesCollection.__super__.constructor.apply(this, arguments);
+  function MyRoundsCollection() {
+    return MyRoundsCollection.__super__.constructor.apply(this, arguments);
   }
 
-  MyGamesCollection.prototype.view = MyGamesListItemView;
+  MyRoundsCollection.prototype.view = MyRoundsListItemView;
 
-  return MyGamesCollection;
+  return MyRoundsCollection;
 
-})(GameCollection);
+})(RoundCollection);
 
-MyGamesPage = (function(_super) {
-  __extends(MyGamesPage, _super);
+MyRoundsPage = (function(_super) {
+  __extends(MyRoundsPage, _super);
 
-  function MyGamesPage() {
-    return MyGamesPage.__super__.constructor.apply(this, arguments);
+  function MyRoundsPage() {
+    return MyRoundsPage.__super__.constructor.apply(this, arguments);
   }
 
-  MyGamesPage.prototype.name = 'my_games';
+  MyRoundsPage.prototype.name = 'my_rounds';
 
-  MyGamesPage.prototype.events = {
-    'click #join-game-button': function(e) {
+  MyRoundsPage.prototype.events = {
+    'click #join-round-button': function(e) {
       e.preventDefault();
-      return $('#joinGameModal').modal();
+      return $('#joinRoundModal').modal();
     }
   };
 
-  MyGamesPage.prototype.initialize = function(options) {
-    this.listview = new MyGamesListView({
-      collection: this.app.collections.my_games,
-      el: this.$('ul#my-games-grid')
+  MyRoundsPage.prototype.initialize = function(options) {
+    this.listview = new MyRoundsListView({
+      collection: this.app.collections.my_rounds,
+      el: this.$('ul#my-rounds-grid')
     });
-    return this.joingameview = new JoinGameView({
-      cards: this.app.collections.my_cards
+    return this.joinroundview = new JoinRoundView({
+      deeds: this.app.collections.my_deeds
     });
   };
 
-  return MyGamesPage;
+  return MyRoundsPage;
 
 })(Page);
 
 module.exports = {
-  MyGamesPage: MyGamesPage,
-  MyGamesCollection: MyGamesCollection
+  MyRoundsPage: MyRoundsPage,
+  MyRoundsCollection: MyRoundsCollection
 };
 
 
-},{"../../models/card.coffee":2,"../../models/game.coffee":3,"../page.coffee":6}]},{},[1])
+},{"../../models/deed.coffee":2,"../../models/round.coffee":4,"../page.coffee":6}],11:[function(require,module,exports){
+var Deed, MessageCollection, Page, Round, RoundDeedListItemView, RoundDeedListView, RoundEndedView, RoundMessageCollection, RoundMessageListItemView, RoundMessageListView, RoundMessagesView, RoundPage, RoundView, deed, round,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Page = require('../page.coffee');
+
+deed = require('../../models/deed.coffee');
+
+round = require('../../models/round.coffee');
+
+Round = round.Round;
+
+Deed = deed.Deed;
+
+MessageCollection = require('../../models/message.coffee').MessageCollection;
+
+RoundDeedListItemView = (function(_super) {
+  __extends(RoundDeedListItemView, _super);
+
+  function RoundDeedListItemView() {
+    return RoundDeedListItemView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundDeedListItemView.prototype.el = "<li classes:{voted:has_my_vote, mine:is_mine}>\n    <h3 data-bind=\"text:title\">Title</h3>\n    <img data-bind=\"attr:{src:image_url}\" />\n    <div class=\"votes\" data-bind=\"text:votes\"></div>\n    <div class=\"full-deed hidden\">\n    	<div class=\"img-container\">\n    		<img data-bind=\"attr:{src:image_url}\" />\n    		<h3 data-bind=\"text:title\">Name</h3>\n    		<div class=\"giveback\"><span><strong data-bind=\"text:giveback\">90</strong>%</span> giveback</div>\n    	</div>\n        <div class=\"message\" data-bind=\"text:message\"></div>\n        <div class=\"ratings\">\n            <div class=\"credibility\"><strong>Credibility</strong><span data-bind=\"text:credibility\">50</span>%</div>\n            <div class=\"longevity\"><strong>Longevity</strong><span data-bind=\"text:longevity\">6</span> rounds</div>\n            <div class=\"winnings\"><strong>Winnings</strong><span data-bind=\"text:winnings\">501 mBTC</span></div>\n            	<div class=\"url\"><strong>Url</strong> <span data-bind=\"toggle:none(url)\">[no url]</span><a data-bind=\"text:url,attr:{href:url}\">View</a></div>\n        </div>\n        <button class=\"btn vote\" data-bind=\"toggle:can_vote,attr:{disabled:has_my_vote},text:select(has_my_vote, 'Voted!', 'Vote')\">Vote</button>\n    </div>\n</li>";
+
+  RoundDeedListItemView.prototype.events = {
+    'click h3, img': function(e) {
+      e.preventDefault();
+      return this.$('.full-deed').toggleClass('hidden');
+    },
+    'click button.vote': function(e) {
+      e.preventDefault();
+      $(e.currentTarget).text('Voting...').attr('disabled', 'disabled');
+      return this.model.vote();
+    }
+  };
+
+  return RoundDeedListItemView;
+
+})(Backbone.Epoxy.View);
+
+RoundMessageListItemView = (function(_super) {
+  __extends(RoundMessageListItemView, _super);
+
+  function RoundMessageListItemView() {
+    return RoundMessageListItemView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundMessageListItemView.prototype.el = "<li data-bind=\"classes:{mine:is_mine}\">\n	<time data-bind=\"text:time\"></time>\n	<span data-bind=\"text:message\"></span>\n</li>";
+
+  return RoundMessageListItemView;
+
+})(Backbone.Epoxy.View);
+
+RoundDeedListView = (function(_super) {
+  __extends(RoundDeedListView, _super);
+
+  function RoundDeedListView() {
+    return RoundDeedListView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundDeedListView.prototype.bindings = {
+    ':el': "collection:$collection"
+  };
+
+  RoundDeedListView.prototype.itemView = RoundDeedListItemView;
+
+  return RoundDeedListView;
+
+})(Backbone.Epoxy.View);
+
+RoundMessageCollection = (function(_super) {
+  __extends(RoundMessageCollection, _super);
+
+  function RoundMessageCollection() {
+    return RoundMessageCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundMessageCollection.prototype.view = RoundMessageListItemView;
+
+  return RoundMessageCollection;
+
+})(MessageCollection);
+
+RoundMessageListView = (function(_super) {
+  __extends(RoundMessageListView, _super);
+
+  function RoundMessageListView() {
+    return RoundMessageListView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundMessageListView.prototype.el = "ul#round-messages";
+
+  RoundMessageListView.prototype.bindings = {
+    ':el': "collection:$collection"
+  };
+
+  RoundMessageListView.prototype.itemView = RoundMessageListItemView;
+
+  return RoundMessageListView;
+
+})(Backbone.Epoxy.View);
+
+RoundMessagesView = (function(_super) {
+  __extends(RoundMessagesView, _super);
+
+  function RoundMessagesView() {
+    return RoundMessagesView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundMessagesView.prototype.initialize = function(options) {
+    return this.list_view = new RoundMessageListView({
+      collection: options.model.get('messages')
+    });
+  };
+
+  RoundMessagesView.prototype.events = {
+    'keydown .chatbox': 'onEnter'
+  };
+
+  RoundMessagesView.prototype.onEnter = function(e) {
+    if (e.which === 13) {
+      e.preventDefault();
+      this.model.send_message(this.$('.chatbox').val());
+      this.$('.chatbox').val('');
+      return this.$('ul#round-messages').scrollTop(this.$('ul#round-messages').height());
+    }
+  };
+
+  return RoundMessagesView;
+
+})(Backbone.View);
+
+RoundEndedView = (function(_super) {
+  __extends(RoundEndedView, _super);
+
+  function RoundEndedView() {
+    return RoundEndedView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundEndedView.prototype.el = '<div class="ended">\n	<h3>Winner: <strong data-bind="text:winner_title">Title</strong></h3>\n	<img data-bind="attr:{src:winner_image_url}" />\n	<div>Votes: <strong data-bind="text:winner_votes"></strong></div>\n	<div>Total won: <strong data-bind="text:nice_winnings"></strong></div>\n	<div>Given back: <strong data-bind="text:winner_nice_giveback_actual"></strong></div>\n	<p data-bind="toggle:voted_for_winner"><span data-bind="text:winner_other_votes"></span> other people voted for this deed. Since giveback was <span data-bind="text:winner_nice_giveback">50%</span>, you got <span data-bind="text:winner_nice_giveback_per_vote"></span> back!</p>\n</div>';
+
+  RoundEndedView.prototype.initialize = function(options) {
+    return this.bindingSources = {
+      winner: function() {
+        return options.model.get('winner');
+      }
+    };
+  };
+
+  return RoundEndedView;
+
+})(Backbone.Epoxy.View);
+
+RoundView = (function(_super) {
+  __extends(RoundView, _super);
+
+  function RoundView() {
+    this.tick = __bind(this.tick, this);
+    return RoundView.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundView.prototype.el = '#page_round';
+
+  RoundView.prototype.bindings = {
+    'div.status div.status-text': 'text:nice_status,attr:{"data-status":status}',
+    'time.timer': 'text:timeleft',
+    'div.pane div.stake span': 'text:stake',
+    'div.pane div.potential span': 'text:potential_winnings'
+  };
+
+  RoundView.prototype.initialize = function(options) {
+    var initEndedView;
+    options.model.listen_for_round_events();
+    initEndedView = function() {
+      var _ref;
+      if (this.model.get('status') === 'ended') {
+        if ((_ref = this.RoundDeedListView) != null) {
+          _ref.destroy();
+        }
+        this.$('.pane.deeds').hide();
+        this.ended_view = new RoundEndedView({
+          model: this.model
+        });
+        return this.$('#ended-pane').html(this.ended_view.$el).show();
+      }
+    };
+    this.model.on('end', initEndedView.bind(this));
+    if (this.model.deeds == null) {
+      this.model.on('fetched_deeds', initEndedView.bind(this));
+    } else {
+      initEndedView.bind(this)();
+    }
+    if (this.model.get('status') !== 'ended') {
+      this.deeds_view = new RoundDeedListView({
+        collection: options.model.deeds,
+        el: this.$('#round-deed-list').get()
+      });
+    }
+    this.messages_view = new RoundMessagesView({
+      model: options.model,
+      el: this.$("#round-messages-pane").get()
+    });
+    if (!this._timer) {
+      return this._timer = setInterval(this.tick, 100);
+    }
+  };
+
+  RoundView.prototype.tick = function() {
+    return this.model.c().timeleft.get(true);
+  };
+
+  return RoundView;
+
+})(Backbone.Epoxy.View);
+
+RoundPage = (function(_super) {
+  __extends(RoundPage, _super);
+
+  function RoundPage() {
+    return RoundPage.__super__.constructor.apply(this, arguments);
+  }
+
+  RoundPage.prototype.name = 'round';
+
+  RoundPage.prototype.show = function(id) {
+    var g, p;
+    RoundPage.__super__.show.apply(this, arguments);
+    g = new Round({
+      id: id
+    });
+    p = this;
+    return g.fetch({
+      success: function() {
+        return p.roundview = new RoundView({
+          model: g
+        });
+      }
+    });
+  };
+
+  return RoundPage;
+
+})(Page);
+
+module.exports = RoundPage;
+
+
+},{"../../models/deed.coffee":2,"../../models/message.coffee":3,"../../models/round.coffee":4,"../page.coffee":6}]},{},[1])

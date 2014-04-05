@@ -1,29 +1,29 @@
 moment.duration.fn.format = (format) -> return moment(@as('milliseconds')).format(format)
 
-class Game extends Backbone.Epoxy.Model
-	urlRoot: '/api/games'
-	appUrl: -> "#games/#{@id}"
-	votes_for: (card) ->
-		return (@.get('votes')? and @.get('votes')[card.id]) or 0
-	vote: (card, cb=$.noop) ->
+class Round extends Backbone.Epoxy.Model
+	urlRoot: '/api/rounds'
+	appUrl: -> "#rounds/#{@id}"
+	votes_for: (deed) ->
+		return (@.get('votes')? and @.get('votes')[deed.id]) or 0
+	vote: (deed, cb=$.noop) ->
 		u = @url() + '/votes'
 		$.ajax
 			url: u
 			type: "POST"
 			contentType: 'application/json'
-			data: JSON.stringify({card_id: card.id})
+			data: JSON.stringify({deed_id: deed.id})
 			dataType: 'json'
 			success: (data) ->
 				cb()
 	initialize: (data) ->
-		@cards = new GameCardCollection([], {game: @})
-		@cards.fetch
+		@deeds = new RoundDeedCollection([], {round: @})
+		@deeds.fetch
 			success: (->
 				@c().winner.get(true)
-				@trigger('fetched_cards')
+				@trigger('fetched_deeds')
 			).bind(@)
 		Message = require('./message.coffee').Message
-		@messages = new GameMessageCollection [
+		@messages = new RoundMessageCollection [
 				new Message
 					time: "16:08"
 					message: "Test"
@@ -39,12 +39,12 @@ class Game extends Backbone.Epoxy.Model
 			]
 		@on 
 			'server:joined': (e) ->
-				c = new GameCard({id: e.card_id}, {game: @})
+				c = new RoundDeed({id: e.deed_id}, {round: @})
 				c.fetch
 					success: =>
-						@cards.add(c)
+						@deeds.add(c)
 			'server:left': (e) ->
-				@cards.remove @cards.at(e.card_id)
+				@deeds.remove @deeds.at(e.deed_id)
 
 			'server:started': (e) ->
 				@set('status', 'started')
@@ -84,19 +84,19 @@ class Game extends Backbone.Epoxy.Model
 				@trigger 'change:votes'
 
 			'change:votes': ->
-				@cards.each (card) ->
-					card.c().votes.get(true) # update=True
+				@deeds.each (deed) ->
+					deed.c().votes.get(true) # update=True
 				return null
 
 
 
 	computeds:
 		url: -> @appUrl()
-		cards: ->
-			return @cards
+		deeds: ->
+			return @deeds
 
 		winner: ->
-			return @cards.get(@get('winner_id'))
+			return @deeds.get(@get('winner_id'))
 		messages: -> return @messages
 		timeleft: -> 
 			if @get('status') == 'waiting_for_players' or @get('status') == 'ended'
@@ -129,8 +129,8 @@ class Game extends Backbone.Epoxy.Model
 			return @get('winnings') + ' mBTC'
 
 		number_of_players: 
-			deps: ['card_ids']
-			get: -> _.size @get('card_ids')
+			deps: ['deed_ids']
+			get: -> _.size @get('deed_ids')
 			
 	send_message: (message) ->
 		@messages.add new Message
@@ -138,27 +138,27 @@ class Game extends Backbone.Epoxy.Model
 			message: message
 			is_mine: true
 
-	listen_for_game_events: ->
-		window.app.sock.game_subscribe @
+	listen_for_round_events: ->
+		window.app.sock.round_subscribe @
 
-class GameCollection extends Backbone.Collection
-	model: Game
-	url: '/api/games'
+class RoundCollection extends Backbone.Collection
+	model: Round
+	url: '/api/rounds'
 
-CardCollection = require('./card.coffee').CardCollection
-GameCard = require('./card.coffee').GameCard
+DeedCollection = require('./deed.coffee').DeedCollection
+RoundDeed = require('./deed.coffee').RoundDeed
 
-class GameCardCollection extends CardCollection
-	#view: GameCardListItemView
+class RoundDeedCollection extends DeedCollection
+	#view: RoundDeedListItemView
 	initialize: (models, options) ->
-		@game = options.game
-	url: -> @game.url() + '/cards'
-	model: GameCard
+		@round = options.round
+	url: -> @round.url() + '/deeds'
+	model: RoundDeed
 
 MessageCollection = require('./message.coffee').MessageCollection
-class GameMessageCollection extends MessageCollection
+class RoundMessageCollection extends MessageCollection
 
 module.exports =
-	Game: Game
-	GameCollection: GameCollection 
-	GameCardCollection: GameCardCollection
+	Round: Round
+	RoundCollection: RoundCollection 
+	RoundDeedCollection: RoundDeedCollection

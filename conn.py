@@ -13,7 +13,7 @@ import logging
 #subscriber = SockJSSubscriber(r)
 class Connection(SockJSConnection):
     clients = set()
-    games = dict()
+    rounds = dict()
 
     def __init__(self, *args, **kwargs):
         super(Connection, self).__init__(*args, **kwargs)
@@ -33,14 +33,14 @@ class Connection(SockJSConnection):
     def on_redis_message(self, msg):
         print msg
         import re
-        if msg.kind == 'pmessage' and re.match(r'peer.do:games:(\d+):events:\*', msg.pattern) and msg.body:
+        if msg.kind == 'pmessage' and re.match(r'peer.do:rounds:(\d+):events:\*', msg.pattern) and msg.body:
             msg_type = msg.channel.split(':')[-1]
-            game_id = int(msg.channel.split(':')[2])
+            round_id = int(msg.channel.split(':')[2])
             # ew. work out a better way of adding to the JSON message.
             self.send(json_dump({
-                'type': 'game_event',
+                'type': 'round_event',
                 'event': msg_type,
-                'game_id': game_id,
+                'round_id': round_id,
                 'data': json.loads(msg.body)
             }))
 
@@ -91,14 +91,14 @@ class Connection(SockJSConnection):
             self.send_message({'message': 'success'}, 'auth')
             logging.debug("Authenticated for %s" % user_id)
 
-        elif message.get('type') == 'game_subscribe' and self.authenticated:
+        elif message.get('type') == 'round_subscribe' and self.authenticated:
             print 'SUBSCRIBING'
-            yield gen.Task(self.client.psubscribe, 'peer.do:games:%s:events:*' % message['game_id'])
+            yield gen.Task(self.client.psubscribe, 'peer.do:rounds:%s:events:*' % message['round_id'])
             self.client.listen(self.on_redis_message)
             print 'SUBSCRIBED'
 
-        elif message.get('type') == 'game_unsubscribe' and self.authenticated:
-            self.client.punsubscribe('peer.do:games:%s:events:*' % message['game_id'])
+        elif message.get('type') == 'round_unsubscribe' and self.authenticated:
+            self.client.punsubscribe('peer.do:rounds:%s:events:*' % message['round_id'])
 
 
         else:
@@ -123,10 +123,10 @@ class Connection(SockJSConnection):
 #     def on_message(self, msg):
 #         data = json.loads(msg)
 
-#         if data['action'] == 'game_subscribe':
-#             subscriber.psubscribe('peer.do:games:%s:events' % data['game_id'], self)
-#         elif data['action'] == 'game_unsubscribe':
-#             subscriber.punsubscribe('peer.do:games:%s:events' % data['game_id'], self)
+#         if data['action'] == 'round_subscribe':
+#             subscriber.psubscribe('peer.do:rounds:%s:events' % data['round_id'], self)
+#         elif data['action'] == 'round_unsubscribe':
+#             subscriber.punsubscribe('peer.do:rounds:%s:events' % data['round_id'], self)
 
 #     def on_close(self):
 #         subscriber.punsubscribe('*')

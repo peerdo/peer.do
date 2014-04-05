@@ -3,8 +3,8 @@ import tornado
 
 from peerdo.utils import json_dump
 from peerdo.handlers import APIHandler
-from peerdo.data.card import Card
-from peerdo.data.game import Game
+from peerdo.data.deed import Deed
+from peerdo.data.round import Round
 
 schema = v.Schema({
     'title': unicode,
@@ -14,29 +14,29 @@ schema = v.Schema({
     'url': unicode,
 }, strip=True)
 
-class CardsHandler(APIHandler):
+class DeedsHandler(APIHandler):
     def post(self):
         print self.json_body
         data = schema(self.json_body)
         data['user_id'] = self.get_current_user().id
-        c = Card.create(data)
-        self.write(json_dump({'card_id': c.id}))
+        c = Deed.create(data)
+        self.write(json_dump({'deed_id': c.id}))
 
     def get(self):
-        self.write(json_dump([c.dict() for c in Card.get_by_user(self.current_user)]))
+        self.write(json_dump([c.dict() for c in Deed.get_by_user(self.current_user)]))
 
-class CardHandler(APIHandler):
+class DeedHandler(APIHandler):
     def get(self, id):
         try:
-            c = Card.get(id)
-        except Card.DoesNotExist:
-            raise tornado.web.HTTPError(404, 'Card not found.')
+            c = Deed.get(id)
+        except Deed.DoesNotExist:
+            raise tornado.web.HTTPError(404, 'Deed not found.')
         else:
             self.write(c.json())
 
     def patch(self, id):
         try:
-            c = Card.get(id)
-        except Card.DoesNotExist:
-            raise tornado.web.HTTPError(404, 'Card not found.')
+            c = Deed.get(id)
+        except Deed.DoesNotExist:
+            raise tornado.web.HTTPError(404, 'Deed not found.')
         c.update(schema(self.json_body))

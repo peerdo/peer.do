@@ -7654,18 +7654,18 @@ header div.bottom nav.navbar {
 }
 
 /* line 75, ../scss/screen.scss */
-#join-game-form div.select2-container a.select2-choice {
+#join-round-form div.select2-container a.select2-choice {
   height: 80px;
   display: table;
   width: 100%;
 }
 /* line 80, ../scss/screen.scss */
-#join-game-form div.select2-container span.select2-chosen {
+#join-round-form div.select2-container span.select2-chosen {
   display: table-cell;
   vertical-align: middle;
 }
 /* line 84, ../scss/screen.scss */
-#join-game-form div.select2-container .select2-arrow b {
+#join-round-form div.select2-container .select2-arrow b {
   top: 50%;
   position: absolute;
   left: 0;
@@ -7678,7 +7678,7 @@ div.page {
   flex: 1 1 auto;
 }
 /* line 95, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid {
+div.page#page_my_rounds ul#my-rounds-grid {
   margin-left: -15px;
   margin-right: -15px;
   /* For modern browsers */
@@ -7687,16 +7687,16 @@ div.page#page_my_games ul#my-games-grid {
   padding: 0;
 }
 /* line 8, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid:before, div.page#page_my_games ul#my-games-grid:after {
+div.page#page_my_rounds ul#my-rounds-grid:before, div.page#page_my_rounds ul#my-rounds-grid:after {
   content: "";
   display: table;
 }
 /* line 12, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid:after {
+div.page#page_my_rounds ul#my-rounds-grid:after {
   clear: both;
 }
 /* line 98, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li {
+div.page#page_my_rounds ul#my-rounds-grid li {
   list-style-type: none;
   position: relative;
   min-height: 1px;
@@ -7706,13 +7706,13 @@ div.page#page_my_games ul#my-games-grid li {
 }
 @media (min-width: 992px) {
   /* line 98, ../scss/screen.scss */
-  div.page#page_my_games ul#my-games-grid li {
+  div.page#page_my_rounds ul#my-rounds-grid li {
     float: left;
     width: 25%;
   }
 }
 /* line 102, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a {
+div.page#page_my_rounds ul#my-rounds-grid li a {
   display: block;
   min-height: 87px;
   text-decoration: none;
@@ -7728,20 +7728,20 @@ div.page#page_my_games ul#my-games-grid li a {
   border-radius: 7px;
 }
 /* line 107, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a h3 {
+div.page#page_my_rounds ul#my-rounds-grid li a h3 {
   margin: 0;
 }
 /* line 115, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a.active {
+div.page#page_my_rounds ul#my-rounds-grid li a.active {
   background-color: #e6d476;
   border: 1px solid #bdb021;
 }
 /* line 119, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a .info {
+div.page#page_my_rounds ul#my-rounds-grid li a .info {
   float: left;
 }
 /* line 122, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a .time {
+div.page#page_my_rounds ul#my-rounds-grid li a .time {
   float: right;
   color: white;
   font-weight: 700;
@@ -7751,13 +7751,13 @@ div.page#page_my_games ul#my-games-grid li a .time {
   margin-right: 0em;
 }
 /* line 131, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a.new {
+div.page#page_my_rounds ul#my-rounds-grid li a.new {
   border: 1px solid #bdb021;
   background-color: transparent;
   text-align: center;
 }
 /* line 135, ../scss/screen.scss */
-div.page#page_my_games ul#my-games-grid li a.new h3 {
+div.page#page_my_rounds ul#my-rounds-grid li a.new h3 {
   position: absolute;
   font-size: 20px;
   line-height: 24px;
@@ -7829,54 +7829,54 @@ div.page#page_index div.recents ul li {
   list-style-type: none;
 }
 /* line 201, ../scss/screen.scss */
-div.page#page_index div.recents ul li div.card {
+div.page#page_index div.recents ul li div.deed {
   border-radius: 10px;
   background: #eee;
 }
 /* line 204, ../scss/screen.scss */
-div.page#page_index div.recents ul li div.card h4 {
+div.page#page_index div.recents ul li div.deed h4 {
   margin: 0;
   padding: 7px 10px;
   font-size: 16px;
   font-weight: bold;
 }
 /* line 210, ../scss/screen.scss */
-div.page#page_index div.recents ul li div.card img {
+div.page#page_index div.recents ul li div.deed img {
   width: 100%;
   height: auto;
 }
 /* line 214, ../scss/screen.scss */
-div.page#page_index div.recents ul li div.card div.lower {
+div.page#page_index div.recents ul li div.deed div.lower {
   padding: 7px 10px;
 }
 /* line 217, ../scss/screen.scss */
-div.page#page_index div.recents ul li div.card a.btn {
+div.page#page_index div.recents ul li div.deed a.btn {
   font-size: inherit !important;
   vertical-align: baseline;
 }
 /* line 226, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid {
+div.page#page_index div.live ul#live-rounds-grid {
   padding: 0;
 }
 /* line 228, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li {
+div.page#page_index div.live ul#live-rounds-grid > li {
   list-style-type: none;
 }
 /* line 230, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li div.round {
+div.page#page_index div.live ul#live-rounds-grid > li div.round {
   background: #eee;
   border-radius: 10px;
   padding: 10px;
 }
 /* line 234, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li div.round h4 {
+div.page#page_index div.live ul#live-rounds-grid > li div.round h4 {
   margin-top: 0;
   margin-bottom: 4px;
   font-size: 16px;
   font-weight: bold;
 }
 /* line 240, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li div.round > ul {
+div.page#page_index div.live ul#live-rounds-grid > li div.round > ul {
   padding: 0;
   margin: 0;
   position: relative;
@@ -7884,18 +7884,18 @@ div.page#page_index div.live ul#live-games-grid > li div.round > ul {
   overflow: hidden;
 }
 /* line 244, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li div.round > ul > li {
+div.page#page_index div.live ul#live-rounds-grid > li div.round > ul > li {
   list-style-type: none;
   display: inline-block;
 }
 /* line 247, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li div.round > ul > li img {
+div.page#page_index div.live ul#live-rounds-grid > li div.round > ul > li img {
   width: 48px;
   height: auto;
   border-radius: 3px;
 }
 /* line 255, ../scss/screen.scss */
-div.page#page_index div.live ul#live-games-grid > li div.round > ul:after {
+div.page#page_index div.live ul#live-rounds-grid > li div.round > ul:after {
   position: absolute;
   top: 0;
   right: 0;
@@ -7910,31 +7910,31 @@ div.page#page_index div.live ul#live-games-grid > li div.round > ul:after {
   height: 100%;
 }
 /* line 272, ../scss/screen.scss */
-div.page#page_my_cards div.header {
+div.page#page_my_deeds div.header {
   padding: 10px 0;
   flex: 0 0 auto;
   width: 100%;
   display: flex;
 }
 /* line 277, ../scss/screen.scss */
-div.page#page_my_cards div.header > div {
+div.page#page_my_deeds div.header > div {
   width: 50%;
   padding: 0 15px;
   font-size: 2em;
   line-height: 1;
 }
 /* line 280, ../scss/screen.scss */
-div.page#page_my_cards div.header > div.cards {
+div.page#page_my_deeds div.header > div.deeds {
   flex: 1 0 0;
 }
 /* line 284, ../scss/screen.scss */
-div.page#page_my_cards div.header > div small {
+div.page#page_my_deeds div.header > div small {
   font-size: 0.5em;
   text-transform: uppercase;
   display: block;
 }
 /* line 292, ../scss/screen.scss */
-div.page#page_my_cards div.pane-container {
+div.page#page_my_deeds div.pane-container {
   flex: 1 1 auto;
   display: flex;
   width: 100%;
@@ -7942,7 +7942,7 @@ div.page#page_my_cards div.pane-container {
   display: flex;
 }
 /* line 298, ../scss/screen.scss */
-div.page#page_my_cards div.pane-container > div.pane {
+div.page#page_my_deeds div.pane-container > div.pane {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -7950,29 +7950,29 @@ div.page#page_my_cards div.pane-container > div.pane {
 }
 @media (min-width: 992px) {
   /* line 298, ../scss/screen.scss */
-  div.page#page_my_cards div.pane-container > div.pane {
+  div.page#page_my_deeds div.pane-container > div.pane {
     float: left;
     width: 50%;
   }
 }
 /* line 302, ../scss/screen.scss */
-div.page#page_my_cards div.pane.card-info {
+div.page#page_my_deeds div.pane.deed-info {
   padding: 5px !important;
   margin: -5px 10px 0;
   border-radius: 15px;
   border: 1px solid #AAA;
 }
 /* line 307, ../scss/screen.scss */
-div.page#page_my_cards div.pane.card-info form.edit-card {
+div.page#page_my_deeds div.pane.deed-info form.edit-deed {
   padding: 5px;
 }
 /* line 311, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list {
+div.page#page_my_deeds #my-deeds-list {
   padding: 0;
   margin: 0;
 }
 /* line 314, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li {
+div.page#page_my_deeds #my-deeds-list li {
   position: relative;
   list-style-type: none;
   height: 80px;
@@ -7980,7 +7980,7 @@ div.page#page_my_cards #my-cards-list li {
   display: flex;
 }
 /* line 317, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li.active:after, div.page#page_my_cards #my-cards-list li.active:before {
+div.page#page_my_deeds #my-deeds-list li.active:after, div.page#page_my_deeds #my-deeds-list li.active:before {
   right: -26px;
   top: 50%;
   border: solid transparent;
@@ -7992,26 +7992,26 @@ div.page#page_my_cards #my-cards-list li.active:after, div.page#page_my_cards #m
   z-index: 100;
 }
 /* line 329, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li.active:after {
+div.page#page_my_deeds #my-deeds-list li.active:after {
   border-color: rgba(255, 255, 255, 0);
   border-right-color: #ffffff;
   border-width: 15px;
   margin-top: -15px;
 }
 /* line 335, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li.active:before {
+div.page#page_my_deeds #my-deeds-list li.active:before {
   border-color: rgba(128, 128, 128, 0);
   border-right-color: #AAA;
   border-width: 16px;
   margin-top: -16px;
 }
 /* line 346, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li:hover {
+div.page#page_my_deeds #my-deeds-list li:hover {
   background: #d8d8d8;
   border-radius: 10px;
 }
 /* line 350, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li img {
+div.page#page_my_deeds #my-deeds-list li img {
   max-width: 80px;
   max-height: 80px;
   -webkit-border-radius: 5px;
@@ -8022,43 +8022,43 @@ div.page#page_my_cards #my-cards-list li img {
   vertical-align: middle;
 }
 /* line 356, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li > div {
+div.page#page_my_deeds #my-deeds-list li > div {
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding-left: 10px;
 }
 /* line 361, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li > div h4 {
+div.page#page_my_deeds #my-deeds-list li > div h4 {
   margin: 0;
 }
 /* line 364, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li > div div.data > div {
+div.page#page_my_deeds #my-deeds-list li > div div.data > div {
   display: inline-block;
 }
 /* line 366, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li > div div.data > div:before {
+div.page#page_my_deeds #my-deeds-list li > div div.data > div:before {
   padding: 0 3px;
   content: ' · ';
 }
 /* line 370, ../scss/screen.scss */
-div.page#page_my_cards #my-cards-list li > div div.data > div:first-child:before {
+div.page#page_my_deeds #my-deeds-list li > div div.data > div:first-child:before {
   display: none;
 }
 /* line 378, ../scss/screen.scss */
-div.page#page_game {
+div.page#page_round {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
 }
 /* line 387, ../scss/screen.scss */
-div.page#page_game div.header {
+div.page#page_round div.header {
   padding: 10px 0;
   flex: 0 0 auto;
   width: 100%;
 }
 /* line 391, ../scss/screen.scss */
-div.page#page_game div.header > div {
+div.page#page_round div.header > div {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -8068,19 +8068,19 @@ div.page#page_game div.header > div {
 }
 @media (min-width: 992px) {
   /* line 391, ../scss/screen.scss */
-  div.page#page_game div.header > div {
+  div.page#page_round div.header > div {
     float: left;
     width: 25%;
   }
 }
 /* line 397, ../scss/screen.scss */
-div.page#page_game div.header > div small {
+div.page#page_round div.header > div small {
   font-size: 0.5em;
   text-transform: uppercase;
   display: block;
 }
 /* line 404, ../scss/screen.scss */
-div.page#page_game div.header div.status {
+div.page#page_round div.header div.status {
   font-size: 1em !important;
   position: relative;
   min-height: 1px;
@@ -8089,34 +8089,34 @@ div.page#page_game div.header div.status {
 }
 @media (min-width: 992px) {
   /* line 404, ../scss/screen.scss */
-  div.page#page_game div.header div.status {
+  div.page#page_round div.header div.status {
     float: left;
     width: 50%;
   }
 }
 /* line 407, ../scss/screen.scss */
-div.page#page_game div.header div.status div.status-text {
+div.page#page_round div.header div.status div.status-text {
   font-size: 1em;
 }
 /* line 409, ../scss/screen.scss */
-div.page#page_game div.header div.status div.status-text[data-status=waiting_for_players], div.page#page_game div.header div.status div.status-text[data-status=ended] {
+div.page#page_round div.header div.status div.status-text[data-status=waiting_for_players], div.page#page_round div.header div.status div.status-text[data-status=ended] {
   font-size: 1.5em;
   height: 48px;
   line-height: 48px;
   font-weight: 700;
 }
 /* line 414, ../scss/screen.scss */
-div.page#page_game div.header div.status div.status-text[data-status=waiting_for_players] + time, div.page#page_game div.header div.status div.status-text[data-status=ended] + time {
+div.page#page_round div.header div.status div.status-text[data-status=waiting_for_players] + time, div.page#page_round div.header div.status div.status-text[data-status=ended] + time {
   display: none;
 }
 /* line 419, ../scss/screen.scss */
-div.page#page_game div.header div.status time {
+div.page#page_round div.header div.status time {
   font-weight: 700;
   font-size: 3em;
   line-height: 1;
 }
 /* line 426, ../scss/screen.scss */
-div.page#page_game div.pane-container {
+div.page#page_round div.pane-container {
   flex: 1 1 auto;
   display: flex;
   width: 100%;
@@ -8124,7 +8124,7 @@ div.page#page_game div.pane-container {
   display: flex;
 }
 /* line 432, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane {
+div.page#page_round div.pane-container > div.pane {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -8132,40 +8132,40 @@ div.page#page_game div.pane-container > div.pane {
 }
 @media (min-width: 992px) {
   /* line 432, ../scss/screen.scss */
-  div.page#page_game div.pane-container > div.pane {
+  div.page#page_round div.pane-container > div.pane {
     float: left;
     width: 50%;
   }
 }
 /* line 435, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.chat {
+div.page#page_round div.pane-container > div.pane.chat {
   display: flex;
   flex-direction: column;
 }
 /* line 439, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.chat ul {
+div.page#page_round div.pane-container > div.pane.chat ul {
   margin: 0;
   padding: 0;
   flex: 1 1 auto;
   overflow: scroll;
 }
 /* line 445, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.chat li {
+div.page#page_round div.pane-container > div.pane.chat li {
   list-style-type: none;
   width: 100%;
   padding: 0.2em 0.5em;
 }
 /* line 449, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.chat li time {
+div.page#page_round div.pane-container > div.pane.chat li time {
   font-weight: 500;
   margin-right: 0.1em;
 }
 /* line 453, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.chat li:nth-child(2n) {
+div.page#page_round div.pane-container > div.pane.chat li:nth-child(2n) {
   background: #eee;
 }
 /* line 457, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.chat textarea {
+div.page#page_round div.pane-container > div.pane.chat textarea {
   flex: 0 0 auto;
   display: block;
   bottom: 0;
@@ -8178,11 +8178,11 @@ div.page#page_game div.pane-container > div.pane.chat textarea {
   font-size: 0.95em;
 }
 /* line 470, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards {
+div.page#page_round div.pane-container > div.pane.deeds {
   overflow: auto;
 }
 /* line 472, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list {
   padding: 0;
   margin: 0;
   display: flex;
@@ -8190,7 +8190,7 @@ div.page#page_game div.pane-container > div.pane.cards ul#game-card-list {
   position: relative;
 }
 /* line 478, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li {
   flex: 0 0 23%;
   margin-right: 2%;
   max-width: 7em;
@@ -8199,7 +8199,7 @@ div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li {
   list-style-type: none;
 }
 /* line 482, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li > h3 {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li > h3 {
   margin: 0;
   margin-bottom: 0.1em;
   font-size: 0.8em;
@@ -8208,15 +8208,15 @@ div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li > 
   white-space: nowrap;
 }
 /* line 492, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li:nth-child(4n) {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li:nth-child(4n) {
   margin-right: 0;
 }
 /* line 494, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li div.hidden {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li div.hidden {
   display: none;
 }
 /* line 497, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li div.full-card {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li div.full-deed {
   background: white;
   width: 100%;
   position: absolute;
@@ -8224,7 +8224,7 @@ div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li di
   left: 0;
 }
 /* line 504, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li > img {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li > img {
   margin: 0 auto;
   display: block;
   width: 100%;
@@ -8235,7 +8235,7 @@ div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li > 
   border-radius: 0.5em;
 }
 /* line 510, ../scss/screen.scss */
-div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li div.votes {
+div.page#page_round div.pane-container > div.pane.deeds ul#round-deed-list > li div.votes {
   margin: 0 auto;
   min-height: 0.62em;
   font-weight: 700;
@@ -8245,11 +8245,11 @@ div.page#page_game div.pane-container > div.pane.cards ul#game-card-list > li di
 }
 
 /* line 524, ../scss/screen.scss */
-div.full-card {
+div.full-deed {
   background: white;
 }
 /* line 526, ../scss/screen.scss */
-div.full-card h3 {
+div.full-deed h3 {
   position: absolute;
   color: white;
   width: 100%;
@@ -8268,33 +8268,33 @@ div.full-card h3 {
   top: 0;
 }
 /* line 540, ../scss/screen.scss */
-div.full-card img {
+div.full-deed img {
   background: white;
   width: 100%;
   position: relative;
   top: -50%;
 }
 /* line 546, ../scss/screen.scss */
-div.full-card .img-container {
+div.full-deed .img-container {
   height: 200px;
   overflow: hidden;
   border-radius: 10px;
   position: relative;
 }
 /* line 552, ../scss/screen.scss */
-div.full-card div > strong {
+div.full-deed div > strong {
   text-transform: uppercase;
   display: block;
   font-size: 0.7em;
   letter-spacing: 0.2em;
 }
 /* line 558, ../scss/screen.scss */
-div.full-card div.message {
+div.full-deed div.message {
   padding: 10px 0;
   font-size: 1.1em;
 }
 /* line 562, ../scss/screen.scss */
-div.full-card div.giveback {
+div.full-deed div.giveback {
   position: absolute;
   top: 30px;
   border-radius: 500px;
@@ -8309,38 +8309,38 @@ div.full-card div.giveback {
   right: 10px;
 }
 /* line 575, ../scss/screen.scss */
-div.full-card div.giveback span {
+div.full-deed div.giveback span {
   font-size: 1.8em;
   padding-top: 0.65em;
   display: block;
 }
 
 /* line 584, ../scss/screen.scss */
-body.game header div.top {
+body.round header div.top {
   display: none;
 }
 /* line 587, ../scss/screen.scss */
-body.game header div.bottom {
+body.round header div.bottom {
   padding: 0;
   font-size: 80%;
 }
 /* line 590, ../scss/screen.scss */
-body.game header div.bottom h1 {
+body.round header div.bottom h1 {
   padding: 0.5em;
 }
 /* line 592, ../scss/screen.scss */
-body.game header div.bottom h1 strong {
+body.round header div.bottom h1 strong {
   display: inline;
 }
 /* line 596, ../scss/screen.scss */
-body.game header div.bottom nav ul li a {
+body.round header div.bottom nav ul li a {
   padding: 0.8em 1em;
   font-size: 1.1em;
   margin: 0;
   border-radius: 0;
 }
 /* line 601, ../scss/screen.scss */
-body.game header div.bottom nav ul li a.current {
+body.round header div.bottom nav ul li a.current {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -8348,6 +8348,6 @@ body.game header div.bottom nav ul li a.current {
   border-radius: 0;
 }
 /* line 607, ../scss/screen.scss */
-body.game footer {
+body.round footer {
   display: none;
 }

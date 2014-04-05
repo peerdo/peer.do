@@ -7,17 +7,17 @@ from peerdo.data.user import User
 from peerdo.settings import *
 from peerdo.utils import datetime_to_timestamp, json_dump, now
 
-class Card(RedisData):
-    namespace = 'peer.do:cards'
+class Deed(RedisData):
+    namespace = 'peer.do:deeds'
     def __init__(self, id, data=None):
-        super(Card, self).__init__(id)
+        super(Deed, self).__init__(id)
         if data is None:
             data = {}
         self.data = data
 
     @classmethod
     def get_by_user(cls, user):
-        return user.get_cards()
+        return user.get_deeds()
 
 
     @property
@@ -31,7 +31,7 @@ class Card(RedisData):
 
     def _create_with_data(self, data, pipe):
         u = User.get(id=data.get('user_id', ''))
-        pipe.zadd(u.key('cards'), datetime_to_timestamp(now()), self.id)
+        pipe.zadd(u.key('deeds'), datetime_to_timestamp(now()), self.id)
         pipe.set(self.key('title'), data.get('title', ''))
         pipe.set(self.key('message'), data.get('message', ''))
         pipe.set(self.key('image_url'), data.get('image_url', ''))

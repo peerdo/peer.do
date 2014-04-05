@@ -44,7 +44,7 @@
 							<li><a href='#'>FAQ</a></li>
 							<li><a href='#'>Contact</a></li>
 						</ul>
-						<p class="number-active navbar-text navbar-right"><strong>1,238</strong> games in progress.</p>
+						<p class="number-active navbar-text navbar-right"><strong>1,238</strong> rounds in progress.</p>
 					</div>
 				</nav>
 			</div>
@@ -54,9 +54,9 @@
 					<div class="navbar-collapse collapse">
 						<div class="navbar-right">
 							<ul class="nav navbar-nav">
-								<li><a data-page="my_games" href='#/'>My games</a></li>
-								<li><a data-page="all_games" href="#/">All games</a></li>
-								<li><a data-page="my_cards" href="#/cards/mine/">My cards</a></li>
+								<li><a data-page="my_rounds" href='#/'>My rounds</a></li>
+								<li><a data-page="all_rounds" href="#/">All rounds</a></li>
+								<li><a data-page="my_deeds" href="#/deeds/mine/">My deeds</a></li>
 								<li><a href='#/account'>Account</a></li>
 							</ul>
 							<p class="balance navbar-text">62.3 <small>mBTC</small></p>
@@ -80,7 +80,7 @@
 					<h2>Recently funded deeds</h2>
 					<ul class="row">
 						<li class="col-sm-3 col-xs-6">
-							<div class="card">
+							<div class="deed">
 								<h4>City of Darkness</h4>
 								<img src="https://s3.amazonaws.com/ksr/projects/895678/photo-ed.jpg?1394169057" />
 								<div class="lower">
@@ -90,7 +90,7 @@
 							</div>
 						</li>
 						<li class="col-sm-3 col-xs-6">
-							<div class="card">
+							<div class="deed">
 								<h4>Firewords</h4>
 								<img src="https://s3.amazonaws.com/ksr/projects/896352/photo-little.jpg?1395186810" />
 								<div class="lower">
@@ -100,7 +100,7 @@
 							</div>
 						</li>
 						<li class="col-sm-3 col-xs-6">
-							<div class="card">
+							<div class="deed">
 								<h4>Tuscany</h4>
 								<img src="https://s3.amazonaws.com/ksr/projects/817282/photo-little.jpg?1393821322" />
 								<div class="lower">
@@ -113,11 +113,11 @@
 				</div>
 				<div class="live">
 					<h2>Live rounds</h2>
-					<ul class="grid row" id="live-games-grid">
+					<ul class="grid row" id="live-rounds-grid">
 						<li class="col-xs-6">
 							<div class="round">
 								<h4>10 deeds, 100 mBTC in pot, 06:23 left</h4>
-								<ul class="cards">
+								<ul class="deeds">
 									<li><img src="http://i.imgur.com/Vm0CR0Bb.jpg" /></li>
 									<li><img src="http://i.imgur.com/QvKLlbXb.jpg" /></li>
 									<li><img src="http://i.imgur.com/x3gmYHTb.jpg" /></li>
@@ -135,7 +135,7 @@
 						<li class="col-xs-6">
 							<div class="round">
 								<h4>5 deeds, 86.2 mBTC in pot, 13:23 left</h4>
-								<ul class="cards">
+								<ul class="deeds">
 									<li><img src="http://i.imgur.com/cVb8mh3b.jpg" /></li>
 									<li><img src="http://i.imgur.com/264fVS1b.jpg" /></li>
 									<li><img src="http://i.imgur.com/pYxUVZUb.jpg" /></li>
@@ -152,22 +152,22 @@
 				</div>
 			</div>
 		</div>
-		<div class="page" id="page_my_games" style="display:block;">
+		<div class="page" id="page_my_rounds" style="display:block;">
 			<div class="container">
-				<h2>My games</h2>
-				<ul class="grid" id="my-games-grid"></ul>
-				<a href="#" id="join-game-button" class="join btn btn-default">Join game</a>
+				<h2>My rounds</h2>
+				<ul class="grid" id="my-rounds-grid"></ul>
+				<a href="#" id="join-round-button" class="join btn btn-default">Join round</a>
 			</div>
 			<!-- Modal -->
-			<div class="modal fade" id="joinGameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal fade" id="joinRoundModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" id="myModalLabel">Join game</h4>
+			        <h4 class="modal-title" id="myModalLabel">Join round</h4>
 			      </div>
 
-			      <form id="join-game-form">
+			      <form id="join-round-form">
 			      <div class="modal-body">
 			      	  <div class="form-group">
 			      	  	<label for="stake">Choose a stake:</label></br />
@@ -188,8 +188,8 @@
 				      	  	</label>
 			      	  </div>
 			      	  <div class="form-group">
-			      	  	<label for="select-card">And a card:</label>
-			      	  	<input id="select-card" class="form-control" name="select-card" type="hidden" />
+			      	  	<label for="select-deed">And a deed:</label>
+			      	  	<input id="select-deed" class="form-control" name="select-deed" type="hidden" />
 			      	  </div>
 			      </div>
 			      <div class="modal-footer">
@@ -201,7 +201,7 @@
 			  </div>
 			</div>
 		</div>
-		<div class="page" id="page_game" style="display:none;">
+		<div class="page" id="page_round" style="display:none;">
 		    <div class="pane header">
 		        <div class="status">
 		    		<div class="status-text">Waiting for players...</div>
@@ -217,42 +217,42 @@
 		        </div>
 		    </div>
 		    <div class="pane-container">
-		        <div class="pane cards">
-		            <ul id="game-card-list">
+		        <div class="pane deeds">
+		            <ul id="round-deed-list">
 					</ul>
 		        </div>
 		        <div class="pane" id="ended-pane" style="display:none;"></div>
-		        <div class="pane chat" id="game-messages-pane">
-		            <ul id="game-messages">
+		        <div class="pane chat" id="round-messages-pane">
+		            <ul id="round-messages">
 		                
 		            </ul>
 		            <textarea class="chatbox"></textarea>
 		        </div>
 		    </div>
 		</div>
-		<div class="page" id="page_my_cards" style="display:none;">
+		<div class="page" id="page_my_deeds" style="display:none;">
 			<div class="pane header">
-				<div class="cards">
-					<small>Cards</small>
+				<div class="deeds">
+					<small>Deeds</small>
 					<span>2</span>
 				</div>
 				<div class="new">
-					<button class="btn" id="create-card-btn">Create new card</button>
+					<button class="btn" id="create-deed-btn">Create new deed</button>
 				</div>
 			</div>
 			<div class="pane-container">
-				<div class="pane cards">
-					<ul id="my-cards-list">
+				<div class="pane deeds">
+					<ul id="my-deeds-list">
 					    
 					</ul>
 				</div>
-				<div class="pane card-info" id="">
-				    <div id="card-view"></div>
+				<div class="pane deed-info" id="">
+				    <div id="deed-view"></div>
 				</div>
 			</div>
 		</div>
-		<div class="page" id="page_all_games" style="display:none;">
-			<table id="all-games-table">
+		<div class="page" id="page_all_rounds" style="display:none;">
+			<table id="all-rounds-table">
 			</table>
 		</div>
 

@@ -35,12 +35,12 @@ class User(RedisData):
     def verify(self, password):
         return pwd_context.verify(password, self._g('hash'))    
 
-    def get_games(self, start=None, num=None):
-        from peerdo.data.game import Game
-        print [id for id in r.zrangebyscore(self.key('games'), '-inf', 'inf', start=start, num=num)]
-        return [Game(id) for id in r.zrangebyscore(self.key('games'), '-inf', 'inf', start=start, num=num)]
+    def get_rounds(self, start=None, num=None):
+        from peerdo.data.round import Round
+        print [id for id in r.zrangebyscore(self.key('rounds'), '-inf', 'inf', start=start, num=num)]
+        return [Round(id) for id in r.zrangebyscore(self.key('rounds'), '-inf', 'inf', start=start, num=num)]
 
-    def get_cards(self, start=None, num=None):
-        from peerdo.data.card import Card
-        return [Card(id) for id in r.zrangebyscore(self.key('cards'), '-inf', 'inf', start=start, num=num)]
+    def get_deeds(self, start=None, num=None):
+        from peerdo.data.deed import Deed
+        return [Deed(id) for id in r.zrangebyscore(self.key('deeds'), '-inf', 'inf', start=start, num=num)]
 
